@@ -2,16 +2,16 @@
 % Please edit documentation in R/chromodoris-package.R
 \docType{package}
 \name{chromodoris-package}
-\alias{chromodoris}
 \alias{chromodoris-package}
 \title{chromodoris: Chromodoris Plots of Many Time Series}
 \description{
-Tools for the Chromodoris plot, which summarizes many time series (one per rater or unit) moment by moment as nested quantile ribbons around a center line. This development version installs and checks but exports no functions yet; a ggplot2 stat and a plotting wrapper are planned.
+Tools for the Chromodoris plot, which summarizes many time series (one per rater or unit) moment by moment as nested quantile ribbons around a center line. Provides a ggplot2 stat that computes the bands and a wrapper that draws the whole plot with one call.
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://github.com/jmgirard/chromodoris}
+  \item \url{https://jmgirard.github.io/chromodoris/}
   \item Report bugs at \url{https://github.com/jmgirard/chromodoris/issues}
 }
 

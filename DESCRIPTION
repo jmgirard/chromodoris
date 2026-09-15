@@ -5,11 +5,10 @@ Authors@R:
     person("Jeffrey", "Girard", , "me@jmgirard.com", role = c("aut", "cre", "cph"))
 Description: Tools for the Chromodoris plot, which summarizes many time
     series (one per rater or unit) moment by moment as nested quantile
-    ribbons around a center line. This development version installs and
-    checks but exports no functions yet; a ggplot2 stat and a plotting
-    wrapper are planned.
+    ribbons around a center line. Provides a ggplot2 stat that computes
+    the bands and a wrapper that draws the whole plot with one call.
 License: MIT + file LICENSE
-URL: https://github.com/jmgirard/chromodoris
+URL: https://github.com/jmgirard/chromodoris, https://jmgirard.github.io/chromodoris/
 BugReports: https://github.com/jmgirard/chromodoris/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -18,6 +17,8 @@ Imports:
     ggplot2,
     rlang
 Config/roxygen2/version: 8.1.0
-Suggests: 
-    testthat (>= 3.0.0)
+Suggests:
+    ggdist,
+    testthat (>= 3.0.0),
+    vdiffr
 Config/testthat/edition: 3

@@ -8,3 +8,7 @@ docs
 .RData
 .Ruserdata
 .httr-oauth
+
+tests/testthat/_problems/
+tests/testthat/testthat-problems.rds
+Rplots.pdf

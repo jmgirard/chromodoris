@@ -1,4 +1,10 @@
-url: ~
+url: https://jmgirard.github.io/chromodoris/
 template:
   bootstrap: 5
+
+reference:
+- title: Plotting
+  contents:
+  - chromodoris
+  - stat_chromodoris
 

@@ -24,10 +24,10 @@ participant or unit, and summarizes them moment by moment as nested quantile
 ribbons (for example the inner 90%, 70%, and 50% of values) around a center
 line, in place of a spaghetti plot of overlaid series.
 
-The package exports no functions yet. It is planned as a ggplot2 extension
-with two layers: a low-level stat that computes the bands from long data
-(columns for series id, time, and value) inside any ggplot pipeline, and a
-high-level wrapper that draws the whole plot with default scales and theme.
+The package is a ggplot2 extension with two layers. `stat_chromodoris()`
+computes the bands from long data (columns for series id, time, and value)
+inside any ggplot pipeline. `chromodoris()` draws the whole plot with
+default scales and theme.
 
 ## Installation
 
@@ -37,4 +37,14 @@ install the development version with:
 ``` r
 # install.packages("pak")
 pak::pak("jmgirard/chromodoris")
+```
+
+## Usage
+
+```{r example, fig.width = 7, fig.height = 4, dpi = 120}
+library(chromodoris)
+set.seed(1)
+d <- expand.grid(id = 1:20, time = 1:40)
+d$value <- sin(d$time / 6) + rnorm(nrow(d), sd = 0.5)
+chromodoris(d, id, time, value)
 ```
