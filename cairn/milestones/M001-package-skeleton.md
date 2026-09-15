@@ -25,12 +25,12 @@ Vignettes → candidate row after M002.
 
 ## Acceptance criteria
 
-- [ ] AC1: `Rscript -e 'devtools::check()'` at the repo root reports 0 errors and 0 warnings; each NOTE is justified by one line in the review evidence.
-- [ ] AC2: DESCRIPTION declares Package `chromodoris`, Version `0.0.0.9000`, `License: MIT + file LICENSE` with LICENSE and LICENSE.md present, `Config/testthat/edition: 3`, and Imports of exactly `ggplot2`, `rlang`, `cli`, read back with `desc::desc_get_deps()` and `desc::desc_get_field()`; a package-level roxygen file imports each so `check()` emits no unimported-namespace NOTE.
-- [ ] AC3: `Rscript -e 'devtools::test()'` runs under testthat edition 3 and passes with at least one test.
-- [ ] AC4: `NEWS.md` has a `# chromodoris (development version)` heading; `README.Rmd` exists and, after `devtools::build_readme()`, `git diff --exit-code README.md` returns 0 on a second run.
-- [ ] AC5: `.github/workflows/R-CMD-check.yaml` and `test-coverage.yaml` exist as written by `usethis::use_github_action("check-standard", badge = FALSE)` and `usethis::use_github_action("test-coverage", badge = FALSE)` with usethis >= 3.0.
-- [ ] AC6: `.Rbuildignore` contains entries matching `^cairn$`, `^\.github$`, `^README\.Rmd$`, `^LICENSE\.md$`, and `^_pkgdown\.yml$`; `_pkgdown.yml` exists.
+- [x] AC1: `Rscript -e 'devtools::check()'` at the repo root reports 0 errors and 0 warnings; each NOTE is justified by one line in the review evidence.
+- [x] AC2: DESCRIPTION declares Package `chromodoris`, Version `0.0.0.9000`, `License: MIT + file LICENSE` with LICENSE and LICENSE.md present, `Config/testthat/edition: 3`, and Imports of exactly `ggplot2`, `rlang`, `cli`, read back with `desc::desc_get_deps()` and `desc::desc_get_field()`; a package-level roxygen file imports each so `check()` emits no unimported-namespace NOTE.
+- [x] AC3: `Rscript -e 'devtools::test()'` runs under testthat edition 3 and passes with at least one test.
+- [x] AC4: `NEWS.md` has a `# chromodoris (development version)` heading; `README.Rmd` exists and, after `devtools::build_readme()`, `git diff --exit-code README.md` returns 0 on a second run.
+- [x] AC5: `.github/workflows/R-CMD-check.yaml` and `test-coverage.yaml` exist as written by `usethis::use_github_action("check-standard", badge = FALSE)` and `usethis::use_github_action("test-coverage", badge = FALSE)` with usethis >= 3.0.
+- [x] AC6: `.Rbuildignore` contains entries matching `^cairn$`, `^\.github$`, `^README\.Rmd$`, `^LICENSE\.md$`, and `^_pkgdown\.yml$`; `_pkgdown.yml` exists.
 
 ## Coverage
 
@@ -69,3 +69,14 @@ Vignettes → candidate row after M002.
 ## Decisions
 
 ## Review
+
+- 2026-09-15 step 1: no git remote exists (`git remote -v` is empty, and `gh repo view jmgirard/chromodoris` finds no repository), so no fetch or push was possible. The default branch is taken as local `main`, the branch the work log records the cut from. The branch is 7 commits ahead of `main` and the merge-base equals the `main` head, so `main` has not moved.
+- AC1 evidence: `devtools::check()` on the branch head reports 0 errors, 0 warnings, 1 NOTE. The NOTE "Problems with news in NEWS.md: No news entries found" is justified because R's NEWS.md parser recognizes only headings that carry a numeric version, and AC4 fixes the heading as `# chromodoris (development version)`. The NOTE stands until a release retitles the heading.
+- AC2 evidence: `desc::desc_get_field()` reads Package `chromodoris`, Version `0.0.0.9000`, License `MIT + file LICENSE`, and Config/testthat/edition `3`. `desc::desc_get_deps()` reads Imports of exactly cli, ggplot2, rlang, and Suggests testthat >= 3.0.0. LICENSE and LICENSE.md are present. NAMESPACE holds import(ggplot2), importFrom(cli, cli_abort), importFrom(rlang, .data), generated from R/chromodoris-package.R. check() emitted no unimported-namespace NOTE.
+- AC3 evidence: `devtools::test()` reports FAIL 0, WARN 0, SKIP 0, PASS 4 under edition 3 per DESCRIPTION.
+- AC4 evidence: the first line of NEWS.md is `# chromodoris (development version)`. README.Rmd exists. `devtools::build_readme()` ran twice, and `git diff --exit-code README.md` returned 0 after each run.
+- AC5 evidence: `.github/workflows/R-CMD-check.yaml` and `test-coverage.yaml` are byte-identical by `diff` to r-lib/actions v2 `examples/check-standard.yaml` and `examples/test-coverage.yaml` fetched today. usethis 3.2.1 is installed. README.md carries no badge, so badge = FALSE held.
+- AC6 evidence: `.Rbuildignore` contains `^cairn$`, `^\.github$`, `^README\.Rmd$`, `^LICENSE\.md$`, and `^_pkgdown\.yml$`, plus `^CLAUDE\.md$`, `^docs$`, `^pkgdown$`. `_pkgdown.yml` exists.
+- Driving RR: none, so projection-vs-outcome no-ops.
+- Consistency gate, universal: `cairn_validate.py` exit 0, all checks passed. No principle changed, so `cairn_impact.py` was skipped.
+- Consistency gate, r-package slot: `devtools::document()` left the tree clean (no diff). README.md is in sync with README.Rmd (see AC4). NEWS.md carries one entry for this milestone with no milestone number. No new top-level file lacks an `.Rbuildignore` entry (check() emits no non-standard-file NOTE). Full check clean (see AC1). `pkgdown::check_pkgdown()` aborts with "In _pkgdown.yml, url is missing" because T5 left `url: ~` until a site exists. No site is built (no docs/ directory), so the slot's "pkgdown site present" condition does not hold and the check is recorded as not applicable, surfaced at the gate.
