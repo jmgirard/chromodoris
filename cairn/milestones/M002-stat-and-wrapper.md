@@ -1,13 +1,13 @@
 # M002: First stat and wrapper
 
-- **Status:** planned
+- **Status:** in-progress
 - **Priority:** high
 - **Depends on:** M001
 - **Driving RR:** —
 - **Principles touched:** —
 - **Resolves:** —
 - **Surface tier:** user-facing — the two exported functions are the package's API
-- **Branch/PR:** —
+- **Branch/PR:** m002-stat-and-wrapper
 
 ## Goal
 

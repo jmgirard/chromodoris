@@ -7,7 +7,7 @@ _Last hygiene check: 2026-09-15, M001 archived after PR #1 merged; remote and CI
 
 | ID | Title | Status | Depends on | Priority | File/Archive |
 |---|---|---|---|---|---|
-| M002 | First stat and wrapper | planned | M001 | high | milestones/M002-stat-and-wrapper.md |
+| M002 | First stat and wrapper | in-progress | M001 | high | milestones/M002-stat-and-wrapper.md |
 | M001 | Package skeleton | done | — | high | milestones/archive/M001-package-skeleton.md |
 <!-- rows grouped by status, not sorted by ID; keep only the 3 most recent
      terminal (done or dropped) rows — older ones live in milestones/archive/ + git -->
