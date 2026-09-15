@@ -161,11 +161,20 @@ because every series is pooled.
 }
 
 \examples{
+# 20 raters sampled 10 times per second for 40 seconds (401 points each).
 set.seed(1)
-d <- expand.grid(id = 1:20, time = 1:40)
-d$value <- sin(d$time / 6) + rnorm(nrow(d), sd = 0.5)
+d <- expand.grid(time = seq(0, 40, by = 0.1), id = 1:20)
+d$value <- sin(d$time / 6) + rnorm(20, sd = 0.3)[d$id] +
+  ave(rnorm(nrow(d), sd = 0.06), d$id,
+      FUN = function(e) stats::filter(e, 0.985, method = "recursive"))
 library(ggplot2)
 ggplot(d, aes(time, value)) +
   stat_chromodoris(aes(fill = after_stat(level)), alpha = 0.8) +
   stat_chromodoris(geom = "line", .width = 0.9)
+# Bin each rater to 0.5-second bins (2 Hz): 81 bins, the last holding
+# only the sample at 40 s.
+# With bin set, group must identify the series.
+ggplot(d, aes(time, value, group = id)) +
+  stat_chromodoris(aes(fill = after_stat(level)), bin = 0.5) +
+  stat_chromodoris(geom = "line", .width = 0.9, bin = 0.5)
 }

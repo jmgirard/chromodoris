@@ -54,3 +54,14 @@ d$value <- sin(d$time / 6) +
       FUN = function(e) stats::filter(e, 0.985, method = "recursive"))
 chromodoris(d, id, time, value)
 ```
+
+Ratings sampled faster than they change give jagged bands: with 20 raters
+the 90% band is set by two raters at every one of the 401 time points.
+`bin = 0.5` averages each rater within 0.5-second bins (2 Hz, so 81 bins
+across the 40 seconds, the last holding only the sample at 40 s) before
+the bands are computed. `bin_series()` does
+the same binning on a data frame.
+
+```{r binned, fig.width = 7, fig.height = 4, dpi = 120}
+chromodoris(d, id, time, value, bin = 0.5)
+```

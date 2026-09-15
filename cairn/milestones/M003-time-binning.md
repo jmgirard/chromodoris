@@ -42,7 +42,7 @@ Let users bin every series onto a common time grid of a stated width before the 
 - [x] T1: Tests first in `tests/testthat/test-bin_series.R` (oracle header naming the hand-computed and independent-implementation oracles; AC1 probes; AC4 width probes). Implement `R/bin_series.R` with `bin_series()` and `check_bin()` reused by the plot functions; export.
 - [x] T2: Record the AC3 fixture from 48e2e88 first. In `R/stat-chromodoris.R` add `bin = NULL` to `stat_chromodoris()` and the params; validate in `setup_params` (lesson: ggplot2 wraps a Stat's `cli_abort`, `expect_error(class =)` still sees it); in `compute_panel` bin per `group` via the AC1 rule before the split-by-x path, aborting on the no-group sentinel; AC2, AC3, AC4 stat tests on line layers (lesson: ribbons overwrite `y`).
 - [x] T3: In `R/chromodoris.R` add `bin = NULL`, validate at call time, pass to both layers; AC2 wrapper equality and AC4 call-time tests in `test-chromodoris.R`.
-- [ ] T4: Docs: roxygen text and examples per AC5, README example at a stated width then `devtools::build_readme()` (lesson: the pre-commit hook refuses stale README.md), NEWS entry, `_pkgdown.yml` row, DESIGN.md Function Families and Architecture updated for the built binning method; `document()`, `test()`, `check()` per AC6.
+- [x] T4: Docs: roxygen text and examples per AC5, README example at a stated width then `devtools::build_readme()` (lesson: the pre-commit hook refuses stale README.md), NEWS entry, `_pkgdown.yml` row, DESIGN.md Function Families and Architecture updated for the built binning method; `document()`, `test()`, `check()` per AC6.
 
 ## Work log
 
@@ -59,6 +59,8 @@ Let users bin every series onto a common time grid of a stated width before the 
 - 2026-09-15: T2 done: `bin` on `stat_chromodoris()`, validated in `setup_params` with the no-group sentinel check; `compute_panel` bins per group via `bin_core()`. AC2 equality at widths 0.7 and 100, AC3 fixture equality, AC4 build-time probes pass.
 
 - 2026-09-15: T3 done: `bin = NULL` on `chromodoris()`, validated at call time, passed to both layers; wrapper equality and call-time probe tests pass.
+
+- 2026-09-15: T4 done: roxygen bin rule and Aesthetics note, examples and README at `bin = 0.5` (81 bins, corrected from a first draft saying 80), README rebuilt, NEWS entry, pkgdown "Preparing data" section, DESIGN Function Families and Architecture updated. `document()` no diff, `test()` 1439 pass 0 fail 0 warn 0 skip, `check()` 0 errors 0 warnings 1 NOTE (the NEWS heading NOTE present at 48e2e88, LESSONS M001).
 
 ## Decisions
 
