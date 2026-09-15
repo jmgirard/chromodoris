@@ -6,7 +6,7 @@
 \alias{chromodoris-package}
 \title{chromodoris: Chromodoris Plots of Many Time Series}
 \description{
-Draws the Chromodoris plot: many time series (one per rater or unit) summarized moment by moment as nested quantile ribbons around a center line, as a ggplot2 extension with a low-level stat and a high-level wrapper.
+Tools for the Chromodoris plot, which summarizes many time series (one per rater or unit) moment by moment as nested quantile ribbons around a center line. This development version installs and checks but exports no functions yet; a ggplot2 stat and a plotting wrapper are planned.
 }
 \seealso{
 Useful links:

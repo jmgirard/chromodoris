@@ -1,6 +1,6 @@
 # M001: Package skeleton
 
-- **Status:** in-progress
+- **Status:** review
 - **Priority:** high
 - **Depends on:** —
 - **Driving RR:** —
@@ -63,6 +63,8 @@ Vignettes → candidate row after M002.
 - 2026-09-15: T4 done. NEWS.md dev heading with one skeleton line (the usethis "Initial CRAN submission" line replaced; the package is GitHub-only). README.Rmd: two paragraphs on the plot plus a pak install line; knitted twice, `git diff --exit-code README.md` returned 0. usethis also installed a local `.git/hooks/pre-commit` that refuses commits when README.Rmd is newer than README.md.
 - 2026-09-15: T5 done. usethis 3.2.1 wrote .github/workflows/R-CMD-check.yaml and test-coverage.yaml from r-lib/actions v2 examples, and _pkgdown.yml (url left as ~ until a site exists). .Rbuildignore now holds ^cairn$, ^LICENSE\.md$, ^README\.Rmd$, ^\.github$, ^_pkgdown\.yml$, ^docs$, ^pkgdown$; .gitignore gained docs.
 - 2026-09-15: T6 done. First `devtools::check()` (R 4.6.1): 0 errors, 0 warnings, 2 NOTEs. NOTE 1 (non-standard top-level file CLAUDE.md) fixed by a `^CLAUDE\.md$` .Rbuildignore entry. NOTE 2 ("Problems with news in NEWS.md: No news entries found") stands: R's NEWS.md parser (`tools:::.build_news_db_from_package_NEWS_md`) only recognizes a heading that carries a numeric package version, and AC4 fixes the heading as `# chromodoris (development version)`; the NOTE clears when the release walk retitles the heading to a version. Second check: 0 errors, 0 warnings, 1 NOTE (NOTE 2).
+- 2026-09-15: claim audit: 18 claims read, 6 corrected — DESCRIPTION, man/chromodoris-package.Rd, README.Rmd, README.md. The six were present-tense claims that the package draws the plot with a stat and wrapper; reworded to define the plot type and state that no functions are exported yet. Re-read by the same reader: 0 still false. Check after the rewording: 0 errors, 0 warnings, 1 NOTE (NOTE 2); tests PASS 4.
+- 2026-09-15: all tasks checked; status set to review.
 
 ## Decisions
 
