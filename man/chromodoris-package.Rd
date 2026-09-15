@@ -17,11 +17,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jeffrey Girard \email{me@jmgirard.com}
+\strong{Maintainer}: Jeffrey Girard \email{me@jmgirard.com} [copyright holder]
 
 Authors:
 \itemize{
-  \item Jeffrey Girard \email{me@jmgirard.com}
+  \item Jeffrey Girard \email{me@jmgirard.com} [copyright holder]
 }
 
 }

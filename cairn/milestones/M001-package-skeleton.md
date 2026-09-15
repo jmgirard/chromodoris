@@ -80,3 +80,12 @@ Vignettes → candidate row after M002.
 - Driving RR: none, so projection-vs-outcome no-ops.
 - Consistency gate, universal: `cairn_validate.py` exit 0, all checks passed. No principle changed, so `cairn_impact.py` was skipped.
 - Consistency gate, r-package slot: `devtools::document()` left the tree clean (no diff). README.md is in sync with README.Rmd (see AC4). NEWS.md carries one entry for this milestone with no milestone number. No new top-level file lacks an `.Rbuildignore` entry (check() emits no non-standard-file NOTE). Full check clean (see AC1). `pkgdown::check_pkgdown()` aborts with "In _pkgdown.yml, url is missing" because T5 left `url: ~` until a site exists. No site is built (no docs/ directory), so the slot's "pkgdown site present" condition does not hold and the check is recorded as not applicable, surfaced at the gate.
+- Independent review, three-lens fan-out (surface tier user-facing). History lens: no findings, every touched file is new. Prior-review lens: no prior-review evidence (empty archive, no remote). Diff-bug lens: seven findings, ranked, each disposed below.
+- Finding 1 (LICENSE names "chromodoris authors" as holder, no cph role in Authors@R): fix now. LICENSE and LICENSE.md now name Jeffrey Girard, and Authors@R carries the cph role.
+- Finding 2 (README says installation waits on a GitHub release, and pak needs no release): fix now. README.Rmd now says "Once the GitHub repository is public", knitted into README.md.
+- Finding 3 (test pins exact import vectors for rlang and cli, breaking on any added import): fix now. The test now checks only that each declared import is present.
+- Finding 4 (`_pkgdown.yml` has `url: ~` while DESCRIPTION declares a URL): follow-up. T5 left the url empty on purpose until a site exists, and no remote exists yet. Absorbed into the M002 vignette candidate row rather than a new row.
+- Finding 5 (.gitignore lacks the usethis R entries): fix now. Added .Rproj.user, .Rhistory, .RData, .Ruserdata, .httr-oauth.
+- Finding 6 (Config/roxygen2/version field placement): rejected. roxygen2 8.x writes that field, and `document()` produces no diff.
+- Finding 7 (work-log lines 57 and 58 read as observed falsifications): rejected. Those lines record the plan gate's falsification conditions in the plan skill's fixed shape, not observed events. The work log is append-only.
+- After the fix-now edits: `document()` and `build_readme()` re-run, README.md stable across two builds, `devtools::test()` PASS 4, `devtools::check()` 0 errors, 0 warnings, 1 NOTE (the NEWS NOTE from AC1).

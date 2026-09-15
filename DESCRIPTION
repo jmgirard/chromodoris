@@ -2,7 +2,7 @@ Package: chromodoris
 Title: Chromodoris Plots of Many Time Series
 Version: 0.0.0.9000
 Authors@R: 
-    person("Jeffrey", "Girard", , "me@jmgirard.com", role = c("aut", "cre"))
+    person("Jeffrey", "Girard", , "me@jmgirard.com", role = c("aut", "cre", "cph"))
 Description: Tools for the Chromodoris plot, which summarizes many time
     series (one per rater or unit) moment by moment as nested quantile
     ribbons around a center line. This development version installs and

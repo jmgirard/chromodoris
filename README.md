@@ -21,8 +21,8 @@ default scales and theme.
 
 ## Installation
 
-The package is not on CRAN. Once a GitHub release exists, you can
-install the development version with:
+The package is not on CRAN. Once the GitHub repository is public, you
+can install the development version with:
 
 ``` r
 # install.packages("pak")

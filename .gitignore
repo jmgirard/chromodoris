@@ -3,3 +3,8 @@ cairn/references/sources/
 cairn/.merge-approved
 cairn/.merge-approved.pending
 docs
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.httr-oauth
