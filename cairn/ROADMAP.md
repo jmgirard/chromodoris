@@ -1,13 +1,13 @@
 # Roadmap
 
 _The only authority on milestone status. Grouped by status, not ID._
-_Last hygiene check: 2026-09-15, M001 archived after PR #1 merged; remote and CI now exist_
+_Last hygiene check: 2026-09-15, M002 archived after PR #2 merged; two candidate rows from review findings_
 
 ## Milestones
 
 | ID | Title | Status | Depends on | Priority | File/Archive |
 |---|---|---|---|---|---|
-| M002 | First stat and wrapper | review | M001 | high | milestones/M002-stat-and-wrapper.md |
+| M002 | First stat and wrapper | done | M001 | high | milestones/archive/M002-stat-and-wrapper.md |
 | M001 | Package skeleton | done | — | high | milestones/archive/M001-package-skeleton.md |
 <!-- rows grouped by status, not sorted by ID; keep only the 3 most recent
      terminal (done or dropped) rows — older ones live in milestones/archive/ + git -->
@@ -21,4 +21,4 @@ _Last hygiene check: 2026-09-15, M001 archived after PR #1 merged; remote and CI
 - Alignment of unshared timestamps onto a grid (binning/interpolation), optional layer — added 2026-09-15 — DESIGN Known issues
 - Ragged-end support marking and bound-clipping display. Also a time point with every value missing emits no row so the ribbon spans the gap, and one series per time point draws zero-height bands with no signal (M002 review findings 3 and 4) — added 2026-09-15 — DESIGN Known issues
 - Input check for duplicate (id, time) rows, which the stat now pools without notice (M002 review finding 9) — added 2026-09-15 — DESIGN input contract
-- Vignette showing the Chromodoris plot on a multi-rater example, and set the pkgdown `url` (left `~` in M001 review finding 4) once the site exists — added 2026-09-15 — after M002
+- Vignette showing the Chromodoris plot on a multi-rater example, and publish the pkgdown site at the url M002 set — added 2026-09-15 — after M002
