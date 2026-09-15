@@ -1,6 +1,6 @@
 # M002: First stat and wrapper
 
-- **Status:** in-progress
+- **Status:** review
 - **Priority:** high
 - **Depends on:** M001
 - **Driving RR:** —
@@ -65,6 +65,8 @@ Suggests as a test oracle only. Vignette → candidate row.
 - 2026-09-15: T5 done. vdiffr and ggdist added to Suggests (D-001). tests/testthat/test-snapshot.R commits chromodoris-default.svg. The snapshot was shown to fail on a planted .width change before the real plot was pinned.
 - 2026-09-15: T6 done. tests/testthat/test-arguments.R checks that .width, center, and type reach the computation from both functions and the wrapper's line layer, against stats::quantile, mean, and median at one time point.
 - 2026-09-15: T7 done. _pkgdown.yml reference rows for both exports, NEWS entries, DESCRIPTION Description updated, README usage chunk with a rendered figure. check_pkgdown() refused to run without a url (M001 lesson), so _pkgdown.yml and DESCRIPTION URL now carry https://jmgirard.github.io/chromodoris/ ahead of the site existing. Results: document() no diff, test() 1366 pass, check() 0 errors 0 warnings and only the M001 NEWS note, check_pkgdown() clean, run_examples() clean.
+- 2026-09-15: claim audit: 38 claims read, 1 corrected — NEWS.md, R/stat-chromodoris.R, R/chromodoris.R. The NEWS entry promised the input error class for every input error, but a bad .width aborted with a plain error inside ggplot2, where tryCatch() cannot see a class on the wrapped condition. Fix: chromodoris() now validates .width at call time through check_width(), which the stat also uses, and NEWS names data, columns, and .width. The reader also flagged committed testthat _problems/ scratch files, now removed and ignored.
+- 2026-09-15: all tasks checked. Final results: document() no diff, test() 1369 pass, check() 0 errors 0 warnings 1 note (M001 NEWS heading), check_pkgdown() clean. Status set to review.
 
 ## Decisions
 

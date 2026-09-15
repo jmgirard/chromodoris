@@ -62,11 +62,8 @@ StatChromodoris <- ggproto(
   required_aes = c("x", "y"),
 
   setup_params = function(data, params) {
-    w <- params$.width
-    if (!is.numeric(w) || length(w) == 0 || any(w <= 0 | w >= 1)) {
-      cli_abort("{.arg .width} must be numeric with every value in (0, 1).")
-    }
-    params$.width <- sort(unique(w), decreasing = TRUE)
+    check_width(params$.width)
+    params$.width <- sort(unique(params$.width), decreasing = TRUE)
     params
   },
 

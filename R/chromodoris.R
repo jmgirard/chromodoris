@@ -28,6 +28,7 @@ chromodoris <- function(data, id, time, value,
   time <- rlang::as_name(rlang::ensym(time))
   value <- rlang::as_name(rlang::ensym(value))
   check_input(data, id, time, value)
+  check_width(.width)
 
   ggplot(data, aes(x = .data[[time]], y = .data[[value]],
                    group = .data[[id]])) +
@@ -58,4 +59,13 @@ check_input <- function(data, id, time, value) {
     }
   }
   invisible(data)
+}
+
+check_width <- function(.width) {
+  if (!is.numeric(.width) || length(.width) == 0 ||
+      anyNA(.width) || any(.width <= 0 | .width >= 1)) {
+    cli_abort("{.arg .width} must be numeric with every value in (0, 1).",
+              class = "chromodoris_error_input")
+  }
+  invisible(.width)
 }

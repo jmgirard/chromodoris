@@ -76,4 +76,11 @@ test_that("a custom .width is sorted widest first and labelled", {
 test_that("bad .width aborts", {
   p <- ggplot(sim, aes(time, value)) + stat_chromodoris(.width = 1.5)
   expect_error(layer_data(p), "must be numeric")
+  expect_error(layer_data(p), class = "chromodoris_error_input")
+  # The wrapper checks at call time, so tryCatch() sees the class directly.
+  caught <- tryCatch(chromodoris(sim, id, time, value, .width = c(0.5, 0)),
+                     chromodoris_error_input = function(e) "caught")
+  expect_equal(caught, "caught")
+  expect_error(chromodoris(sim, id, time, value, .width = NA_real_),
+               class = "chromodoris_error_input")
 })
