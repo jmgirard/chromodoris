@@ -11,7 +11,8 @@ chromodoris(
   value,
   .width = c(0.5, 0.7, 0.9),
   center = c("mean", "median"),
-  type = 7
+  type = 7,
+  bin = NULL
 )
 }
 \arguments{
@@ -27,6 +28,11 @@ Default \code{c(0.5, 0.7, 0.9)}.}
 \item{center}{One of \code{"mean"} (default) or \code{"median"}.}
 
 \item{type}{Quantile algorithm passed to \code{\link[stats:quantile]{stats::quantile()}}. Default 7.}
+
+\item{bin}{\code{NULL} (default) to summarise at each observed \code{x}, or a
+single positive number: the bin width in \code{x} units. Each series is
+first averaged within bins of that width, exactly as \code{\link[=bin_series]{bin_series()}}
+does, and the bands are computed at the bin midpoints.}
 }
 \value{
 A ggplot object with two layers: a ribbon layer built on

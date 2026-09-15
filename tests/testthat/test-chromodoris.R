@@ -78,3 +78,26 @@ test_that("R edge cases: NA values, a single rater, an empty frame", {
   empty <- sim[0, ]
   expect_s3_class(chromodoris(empty, id, time, value), "ggplot")
 })
+
+# --- bin (M003) -------------------------------------------------------------
+
+test_that("bin reaches both wrapper layers and equals the stat's output", {
+  w <- 0.7
+  cols <- c("x", "ymin", "ymax", "center", "level")
+  p <- chromodoris(sim, id, time, value, bin = w)
+  base <- ggplot(sim, aes(time, value, group = id))
+  want1 <- layer_data(base + stat_chromodoris(bin = w), 1)
+  want2 <- layer_data(base + stat_chromodoris(geom = "line", .width = 0.9,
+                                              bin = w), 1)
+  expect_equal(layer_data(p, 1)[cols], want1[cols])
+  expect_equal(layer_data(p, 2)[c(cols, "y")], want2[c(cols, "y")])
+  # Binned rows sit at midpoints of 0.7-wide bins, unlike the raw grid.
+  expect_false(any(layer_data(p, 1)$x %in% sim$time))
+})
+
+test_that("invalid bin signals chromodoris_error_input at call time", {
+  for (w in list(NA, Inf, 0, -1, c(1, 2), "1", list(1))) {
+    expect_error(chromodoris(sim, id, time, value, bin = w),
+                 class = "chromodoris_error_input")
+  }
+})

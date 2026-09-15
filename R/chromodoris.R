@@ -22,7 +22,8 @@
 #' @export
 chromodoris <- function(data, id, time, value,
                         .width = c(0.5, 0.7, 0.9),
-                        center = c("mean", "median"), type = 7) {
+                        center = c("mean", "median"), type = 7,
+                        bin = NULL) {
   center <- match.arg(center)
   id <- rlang::as_name(rlang::ensym(id))
   time <- rlang::as_name(rlang::ensym(time))
@@ -30,13 +31,15 @@ chromodoris <- function(data, id, time, value,
   check_input(data, id, time, value)
   check_width(.width)
   check_type(type)
+  check_bin(bin, allow_null = TRUE, arg = "bin")
 
   ggplot(data, aes(x = .data[[time]], y = .data[[value]],
                    group = .data[[id]])) +
     stat_chromodoris(aes(fill = after_stat(level)),
-                     .width = .width, center = center, type = type) +
+                     .width = .width, center = center, type = type,
+                     bin = bin) +
     stat_chromodoris(geom = "line", .width = max(.width), center = center,
-                     type = type, show.legend = FALSE) +
+                     type = type, bin = bin, show.legend = FALSE) +
     scale_fill_viridis_d(name = "Band") +
     labs(x = time, y = value) +
     theme_minimal()
