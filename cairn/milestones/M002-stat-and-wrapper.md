@@ -43,7 +43,7 @@ Suggests as a test oracle only. Vignette → candidate row.
 ## Tasks
 
 - [x] T1: Simulated dataset generator (seeded; `data-raw/` script or test helper) with provenance header.
-- [ ] T2: Internal `summarise_bands(values, .width, center, type)` in base R; oracle tests against `stats::quantile` types 7 and 8 and `stats::median` (RB tripwire: no-oracle if a summary beyond quantiles is added).
+- [x] T2: Internal `summarise_bands(values, .width, center, type)` in base R; oracle tests against `stats::quantile` types 7 and 8 and `stats::median` (RB tripwire: no-oracle if a summary beyond quantiles is added).
 - [ ] T3: `StatChromodoris` ggproto + `stat_chromodoris()` returning long (x, level, ymin, ymax, center); `layer_data()` tests and the ggdist Suggests test.
 - [ ] T4: `chromodoris()` wrapper: tidy-eval column selection, cli input errors of class `chromodoris_error_input`, ribbon + line layers, viridis fill, legend labels and order, theme.
 - [ ] T5: vdiffr snapshot test; vdiffr and ggdist to Suggests.
@@ -59,6 +59,7 @@ Suggests as a test oracle only. Vignette → candidate row.
 
 - 2026-09-15: implement started on branch m002-stat-and-wrapper. Question gate outcomes: vdiffr and ggdist go to Suggests (D-001). The line layer reuses the stat with the widest band only. The simulated dataset is a seeded test helper, and examples simulate inline. The wrapper theme is theme_minimal with legend title "Band".
 - 2026-09-15: T1 done. tests/testthat/helper-sim.R adds sim_raters() (24 raters, 60 time points, seed 20260915) with a provenance header and a shape test.
+- 2026-09-15: T2 done. R/summarise_bands.R (23 lines) with oracle tests against stats::quantile types 7 and 8 (live) and hand-computed type-7 edges on 1:10 (closed-form). No summary beyond quantiles, mean, and median was added, so the no-oracle tripwire did not fire. DESIGN Conventions now names where oracle records live (test file headers).
 
 ## Decisions
 

@@ -46,7 +46,8 @@ _Planned, not built:_
 - **Numeric work is oracle-verified.** Band edges and the center line are
   tested against an independent reference (base `quantile()`, ggdist) at
   the ≥2-types bar (D-024/D-025 doctrine). Supersedes the init-time
-  "no numeric work" line.
+  "no numeric work" line. Oracle records: the comment header of each
+  `tests/testthat/test-*.R` file names its oracles by id and type.
 - **Dependencies.** Imports: ggplot2, rlang, cli. Alignment and quantiles
   in base R. No ggdist, distributional, dplyr, or tidyr in Imports.
 - **Pure R.** No compiled code (reversible default, 2026-09-15).
