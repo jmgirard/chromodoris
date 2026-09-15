@@ -115,3 +115,47 @@ test_that("extra aesthetics are dropped without a warning", {
   expect_true(all(is.na(ld$colour)))
   expect_equal(nrow(ld), 60 * 3)
 })
+
+# --- bin (M003) -------------------------------------------------------------
+# Oracle for `bin`: bin_series() (test-bin_series.R oracles O4, O5), the
+# stat drawn on its output.
+
+line_data <- function(data, ...) {
+  p <- ggplot(data, aes(time, value, group = id)) +
+    stat_chromodoris(geom = "line", ...)
+  layer_data(p, 1)
+}
+band_cols <- c("x", "ymin", "ymax", "center", "y", "level")
+
+test_that("bin = w equals the stat drawn on bin_series() output", {
+  # 0.7 does not divide the grid step 30 / 59; 100 exceeds the time range.
+  for (w in c(0.7, 100)) {
+    got <- line_data(sim, bin = w)
+    want <- line_data(bin_series(sim, id, time, value, width = w))
+    expect_equal(got[band_cols], want[band_cols])
+    expect_equal(nrow(got), 3 * length(unique(want$x)))
+  }
+  expect_equal(nrow(line_data(sim, bin = 100)), 3)
+})
+
+test_that("the default path equals the fixture recorded at 48e2e88", {
+  want <- readRDS(test_path("fixtures", "stat-default-48e2e88.rds"))
+  expect_equal(line_data(sim), want)
+  expect_equal(line_data(sim, bin = NULL), want)
+})
+
+test_that("invalid bin signals chromodoris_error_input at build", {
+  for (w in list(NA, Inf, 0, -1, c(1, 2), "1", list(1))) {
+    p <- ggplot(sim, aes(time, value, group = id)) + stat_chromodoris(bin = w)
+    expect_error(ggplot_build(p), class = "chromodoris_error_input")
+  }
+})
+
+test_that("bin without a group mapping errors; one grouped series bins", {
+  p <- ggplot(sim, aes(time, value)) + stat_chromodoris(bin = 1)
+  expect_error(ggplot_build(p), class = "chromodoris_error_input")
+  one <- sim[sim$id == "r01", ]
+  expect_equal(unique(one$id), "r01")
+  out <- line_data(one, bin = 1)
+  expect_equal(nrow(out), 3 * nrow(bin_series(one, id, time, value, width = 1)))
+})

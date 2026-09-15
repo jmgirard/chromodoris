@@ -7,9 +7,12 @@
 #' [chromodoris()] wrapper, which does this for you.
 #'
 #' @section Aesthetics:
-#' `stat_chromodoris()` requires `x` (time) and `y` (value). Mapping
-#' `group` to a series id is allowed but not needed, because every series
-#' in a panel is pooled at each `x`.
+#' `stat_chromodoris()` requires `x` (time) and `y` (value). Without `bin`,
+#' mapping `group` to a series id is allowed but not needed, because every
+#' series in a panel is pooled at each `x`. With `bin` set, `group` must
+#' identify the series, because each series is binned on its own before
+#' the pooling; a layer with no `group` mapping then signals an error when
+#' the plot is built.
 #'
 #' @section Computed variables:
 #' The stat returns one row per (`x`, `level`):
@@ -31,6 +34,10 @@
 #' @param type Quantile algorithm passed to [stats::quantile()]. Default 7.
 #' @param na.rm If `FALSE` (default), missing values are removed with a
 #'   warning. If `TRUE`, they are removed silently.
+#' @param bin `NULL` (default) to summarise at each observed `x`, or a
+#'   single positive number: the bin width in `x` units. Each series is
+#'   first averaged within bins of that width, exactly as [bin_series()]
+#'   does, and the bands are computed at the bin midpoints.
 #' @return A ggplot2 layer.
 #' @examples
 #' set.seed(1)
@@ -45,7 +52,7 @@ stat_chromodoris <- function(mapping = NULL, data = NULL, geom = "ribbon",
                              position = "identity", ...,
                              .width = c(0.5, 0.7, 0.9),
                              center = c("mean", "median"), type = 7,
-                             na.rm = FALSE, show.legend = NA,
+                             bin = NULL, na.rm = FALSE, show.legend = NA,
                              inherit.aes = TRUE) {
   center <- match.arg(center)
   layer(
@@ -53,7 +60,7 @@ stat_chromodoris <- function(mapping = NULL, data = NULL, geom = "ribbon",
     position = position, show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(.width = .width, center = center, type = type,
-                  na.rm = na.rm, ...)
+                  bin = bin, na.rm = na.rm, ...)
   )
 }
 
@@ -70,13 +77,26 @@ StatChromodoris <- ggproto(
   setup_params = function(data, params) {
     check_width(params$.width)
     check_type(params$type)
+    check_bin(params$bin, allow_null = TRUE, arg = "bin")
+    if (!is.null(params$bin) && all(data$group == -1)) {
+      cli_abort(c(
+        "{.arg bin} needs {.field group} mapped to the series id.",
+        i = "Every series is binned on its own before the bands are computed."
+      ), class = "chromodoris_error_input")
+    }
     params$.width <- sort(unique(params$.width), decreasing = TRUE)
     params
   },
 
   compute_panel = function(data, scales, .width = c(0.5, 0.7, 0.9),
-                           center = "mean", type = 7, na.rm = FALSE) {
+                           center = "mean", type = 7, bin = NULL,
+                           na.rm = FALSE) {
     labels <- band_labels(.width)
+    if (!is.null(bin)) {
+      binned <- bin_core(data$group, data$x, data$y, bin)
+      data <- data.frame(x = binned$time, y = binned$value,
+                         group = binned$id, PANEL = data$PANEL[1])
+    }
     pieces <- lapply(split(data, data$x), function(d) {
       bands <- summarise_bands(d$y, .width = .width, center = center,
                                type = type)

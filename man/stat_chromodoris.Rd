@@ -14,6 +14,7 @@ stat_chromodoris(
   .width = c(0.5, 0.7, 0.9),
   center = c("mean", "median"),
   type = 7,
+  bin = NULL,
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE
@@ -101,6 +102,11 @@ Default \code{c(0.5, 0.7, 0.9)}.}
 
 \item{type}{Quantile algorithm passed to \code{\link[stats:quantile]{stats::quantile()}}. Default 7.}
 
+\item{bin}{\code{NULL} (default) to summarise at each observed \code{x}, or a
+single positive number: the bin width in \code{x} units. Each series is
+first averaged within bins of that width, exactly as \code{\link[=bin_series]{bin_series()}}
+does, and the bands are computed at the bin midpoints.}
+
 \item{na.rm}{If \code{FALSE} (default), missing values are removed with a
 warning. If \code{TRUE}, they are removed silently.}
 
@@ -129,9 +135,12 @@ upper edge plus one center value. The default geom is a ribbon. Map
 }
 \section{Aesthetics}{
 
-\code{stat_chromodoris()} requires \code{x} (time) and \code{y} (value). Mapping
-\code{group} to a series id is allowed but not needed, because every series
-in a panel is pooled at each \code{x}.
+\code{stat_chromodoris()} requires \code{x} (time) and \code{y} (value). Without \code{bin},
+mapping \code{group} to a series id is allowed but not needed, because every
+series in a panel is pooled at each \code{x}. With \code{bin} set, \code{group} must
+identify the series, because each series is binned on its own before
+the pooling; a layer with no \code{group} mapping then signals an error when
+the plot is built.
 }
 
 \section{Computed variables}{
