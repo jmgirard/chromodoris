@@ -1,6 +1,6 @@
 # M003: Time binning
 
-- **Status:** in-progress
+- **Status:** review
 - **Priority:** high
 - **Depends on:** —
 - **Driving RR:** —
@@ -61,6 +61,9 @@ Let users bin every series onto a common time grid of a stated width before the 
 - 2026-09-15: T3 done: `bin = NULL` on `chromodoris()`, validated at call time, passed to both layers; wrapper equality and call-time probe tests pass.
 
 - 2026-09-15: T4 done: roxygen bin rule and Aesthetics note, examples and README at `bin = 0.5` (81 bins, corrected from a first draft saying 80), README rebuilt, NEWS entry, pkgdown "Preparing data" section, DESIGN Function Families and Architecture updated. `document()` no diff, `test()` 1439 pass 0 fail 0 warn 0 skip, `check()` 0 errors 0 warnings 1 NOTE (the NEWS heading NOTE present at 48e2e88, LESSONS M001).
+
+- 2026-09-15: claim audit: 21 claims read, 2 corrected — README.Rmd, R/stat-chromodoris.R (the "two raters" gloss and the `@param bin` bin rule; both re-read VERIFIED, 0 wrong).
+- 2026-09-15: all tasks done; `document()` no diff, `test()` 1439 pass 0 fail, `check()` 0 errors 0 warnings 1 NOTE (NEWS heading, LESSONS M001); status set to review.
 
 ## Decisions
 

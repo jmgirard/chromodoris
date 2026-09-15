@@ -47,11 +47,12 @@ chromodoris(d, id, time, value)
 <img src="man/figures/README-example-1.png" alt="" width="100%" />
 
 Ratings sampled faster than they change give jagged bands: with 20
-raters the 90% band is set by two raters at every one of the 401 time
-points. `bin = 0.5` averages each rater within 0.5-second bins (2 Hz, so
-81 bins across the 40 seconds, the last holding only the sample at 40 s)
-before the bands are computed. `bin_series()` does the same binning on a
-data frame.
+raters, each edge of the 90% band follows one rater’s value at every one
+of the 401 time points, so it jumps whenever that rater moves.
+`bin = 0.5` averages each rater within 0.5-second bins (2 Hz, so 81 bins
+across the 40 seconds, the last holding only the sample at 40 s) before
+the bands are computed. `bin_series()` does the same binning on a data
+frame.
 
 ``` r
 chromodoris(d, id, time, value, bin = 0.5)

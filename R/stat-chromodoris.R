@@ -37,7 +37,8 @@
 #' @param bin `NULL` (default) to summarise at each observed `x`, or a
 #'   single positive number: the bin width in `x` units. Each series is
 #'   first averaged within bins of that width, exactly as [bin_series()]
-#'   does, and the bands are computed at the bin midpoints.
+#'   does: bin `k` covers `[k * bin, (k + 1) * bin)`, and the bands are
+#'   computed at the bin midpoints `(k + 0.5) * bin`.
 #' @return A ggplot2 layer.
 #' @examples
 #' # 20 raters sampled 10 times per second for 40 seconds (401 points each).

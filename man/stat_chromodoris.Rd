@@ -105,7 +105,8 @@ Default \code{c(0.5, 0.7, 0.9)}.}
 \item{bin}{\code{NULL} (default) to summarise at each observed \code{x}, or a
 single positive number: the bin width in \code{x} units. Each series is
 first averaged within bins of that width, exactly as \code{\link[=bin_series]{bin_series()}}
-does, and the bands are computed at the bin midpoints.}
+does: bin \code{k} covers \verb{[k * bin, (k + 1) * bin)}, and the bands are
+computed at the bin midpoints \code{(k + 0.5) * bin}.}
 
 \item{na.rm}{If \code{FALSE} (default), missing values are removed with a
 warning. If \code{TRUE}, they are removed silently.}
