@@ -44,7 +44,13 @@ pak::pak("jmgirard/chromodoris")
 ```{r example, fig.width = 7, fig.height = 4, dpi = 120}
 library(chromodoris)
 set.seed(1)
-d <- expand.grid(id = 1:20, time = 1:40)
-d$value <- sin(d$time / 6) + rnorm(nrow(d), sd = 0.5)
+# 20 raters sampled 10 times per second over 40 seconds: a shared signal,
+# a per-rater offset, and slowly drifting per-rater noise.
+time <- seq(0, 40, by = 0.1)
+d <- expand.grid(time = time, id = 1:20)
+d$value <- sin(d$time / 6) +
+  rnorm(20, sd = 0.3)[d$id] +
+  ave(rnorm(nrow(d), sd = 0.06), d$id,
+      FUN = function(e) stats::filter(e, 0.985, method = "recursive"))
 chromodoris(d, id, time, value)
 ```
