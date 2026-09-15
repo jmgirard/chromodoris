@@ -49,6 +49,15 @@ test_that("bins match an independent tapply() computation", {
   expect_true(any(d$time < 0))
 
   k <- floor(d$time / width)
+  # The axes the comment claims, asserted: s3 has rows in bin 3 and every
+  # one of them is NA; some series has a bin with no rows inside its range.
+  s3_bin3 <- d$value[d$id == "s3" & k == 3]
+  expect_true(length(s3_bin3) > 0 && all(is.na(s3_bin3)))
+  has_gap <- vapply(split(k, d$id), function(ks) {
+    length(setdiff(seq(min(ks), max(ks)), ks)) > 0
+  }, logical(1))
+  expect_true(any(has_gap))
+
   m <- tapply(d$value, list(d$id, k), mean, na.rm = TRUE)
   idx <- which(is.finite(m), arr.ind = TRUE)
   expected <- data.frame(

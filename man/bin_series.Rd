@@ -29,7 +29,10 @@ series sampled faster than they vary become one value per bin. A time
 \verb{[k * width, (k + 1) * width)}. The binned row carries the bin midpoint
 \code{(k + 0.5) * width} as its time and the arithmetic mean of the series'
 non-missing values in the bin as its value. A bin with no non-missing
-value for a series yields no row for that series.
+value for a series yields no row for that series. The bin index is
+computed in floating point, so a time that sits on a bin boundary can
+fall in the lower bin when \code{t / width} is not exactly an integer (for
+example \code{4.3 / 0.1}).
 }
 \details{
 \code{\link[=stat_chromodoris]{stat_chromodoris()}} and \code{\link[=chromodoris]{chromodoris()}} apply the same rule through

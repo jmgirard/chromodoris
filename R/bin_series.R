@@ -6,7 +6,10 @@
 #' `[k * width, (k + 1) * width)`. The binned row carries the bin midpoint
 #' `(k + 0.5) * width` as its time and the arithmetic mean of the series'
 #' non-missing values in the bin as its value. A bin with no non-missing
-#' value for a series yields no row for that series.
+#' value for a series yields no row for that series. The bin index is
+#' computed in floating point, so a time that sits on a bin boundary can
+#' fall in the lower bin when `t / width` is not exactly an integer (for
+#' example `4.3 / 0.1`).
 #'
 #' [stat_chromodoris()] and [chromodoris()] apply the same rule through
 #' their `bin` argument.

@@ -70,6 +70,7 @@ Let users bin every series onto a common time grid of a stated width before the 
 - 2026-09-15: re-audit: AC3 (full) — the criterion names the default ribbon geom, whose `layer_data()` does not equal the line-geom fixture, numstat prints `-` for the binary fixture, instrument property, fixture provenance unverified (PROFILE test-doctrine fixture rule), no wrapper fixture. Second re-audit line, so further AC3 wording went to the user.
 - 2026-09-15: user gate: amendment return: AC3 — "`layer_data()` of a line-geom `stat_chromodoris()` layer with `group = id`, and of the same layer with `bin = NULL`, on the seeded `sim_raters()` data equals the fixture `tests/testthat/fixtures/stat-default-48e2e88.rds`, which the committed script `data-raw/stat-default-fixture.R` regenerates from the `R/` tree at commit 48e2e88". The diff check moved to a T2 note. T5 added (generator script) and Coverage AC3 → T2, T5. Wrapper default-path fixture rejected: the wrapper's two layers are tested equal to the stat's layers in test-chromodoris.R, so a regression surfaces there.
 - 2026-09-15: T5 done: `data-raw/stat-default-fixture.R` regenerates the fixture from a `git archive` of 48e2e88 (R/, DESCRIPTION, NAMESPACE). The regenerated file is byte-identical to the committed fixture (`identical()` TRUE, `git status` clean on the .rds). `^data-raw$` added to `.Rbuildignore`. `test()` 1439 pass 0 fail 0 warn 0 skip. Claim audit not re-run (one-pass stopping rule). The script header's claims are written from this run's output and the commands above. Status set to review.
+- 2026-09-15: review pass 2: AC1–AC6 verified, gate clean, 11 reviewer findings triaged (4 fixed now, 2 follow-up rows, 5 rejected, Review section). step-7 approval: m003-time-binning approved for merge.
 
 ## Decisions
 
@@ -95,3 +96,16 @@ Pass 2, 2026-09-15, at 5be71a7 on the amended AC3, branch in sync with origin/ma
 - AC5 (pass 2): roxygen, README, NEWS, and `_pkgdown.yml` unchanged since pass 1, `pkgdown::check_pkgdown()` reports no problems. PASS.
 - AC6 (pass 2): `document()` 0 changed files, `test()` 1439 pass 0 fail 0 warn 0 skip, `check()` 0 errors 0 warnings 1 NOTE (the NEWS heading NOTE present at 48e2e88, LESSONS M001). PASS.
 - Consistency gate, pass 2: `cairn_validate.py` exit 0 with all checks passed, no DESIGN principle changed so `cairn_impact` is skipped, document() no diff, generated files untouched by hand (NAMESPACE and man/ regenerate clean), README.md knitted from README.Rmd, pkgdown check clean, NEWS entry present with no milestone numbers, `^data-raw$` in `.Rbuildignore`, check() clean with the one justified NOTE. PASS.
+- Independent review, pass 2 (three lenses at fb4c8ae). Blame-history [S]: no findings. Prior-review-comments [S]: no regression of M001 or M002 review findings, PR-comment probe empty. Diff-bug [O]: 11 findings, triaged at the gate:
+  1. README band-edge sentence wrong (a 5/95 blend of the two lowest raters, not one rater). Fix now: README.Rmd reworded, README rebuilt.
+  2. A constant or too-coarse `group` collapses every series into one with zero-width bands and no warning. Follow-up: candidate row.
+  3. Rows with a non-missing value but NA time are dropped silently by `bin_core()`. Follow-up: absorbed into the input-check candidate row.
+  4. The seeded oracle's all-NA bin and empty-bin axes were claimed in a comment, not asserted. Fix now: two assertions added in test-bin_series.R.
+  5. `floor(time / width)` misbins boundary times on decimal grids (22 of 401 at width 0.1) and the roxygen stated the rule as exact. Fix now: floating-point caveat added to `bin_series()` and `@param bin`.
+  6. The generator sourced the working-tree helper-sim.R, not the 48e2e88 copy. Fix now: the helper is archived from 48e2e88 and sourced from the export.
+  7. AC2 wrapper equality tested on a column subset. Rejected: AC2 names the compared columns.
+  8. `bin` larger than the range places the one row at the bin midpoint outside the data. Rejected: the plan gate chose midpoints.
+  9. `bin` mode rebuilds the layer frame from four columns. Rejected: the reviewer found no observable defect.
+  10. `stats::` used without `stats` in Imports. Rejected: pre-existing, check() clean.
+  11. AC3 box unticked. Rejected: ticked at fb4c8ae after the reviewer's read.
+- After the fix-now work: `document()` regenerated three Rd files, `build_readme()` rebuilt README.md, the generator still produces a byte-identical fixture, `test()` 1441 pass 0 fail 0 warn 0 skip.

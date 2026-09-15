@@ -33,7 +33,9 @@ Default \code{c(0.5, 0.7, 0.9)}.}
 single positive number: the bin width in \code{x} units. Each series is
 first averaged within bins of that width, exactly as \code{\link[=bin_series]{bin_series()}}
 does: bin \code{k} covers \verb{[k * bin, (k + 1) * bin)}, and the bands are
-computed at the bin midpoints \code{(k + 0.5) * bin}.}
+computed at the bin midpoints \code{(k + 0.5) * bin}. The bin index is
+computed in floating point, so a boundary time can fall in the lower
+bin when \code{x / bin} is not exactly an integer.}
 }
 \value{
 A ggplot object with two layers: a ribbon layer built on

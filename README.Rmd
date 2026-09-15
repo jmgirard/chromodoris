@@ -56,8 +56,9 @@ chromodoris(d, id, time, value)
 ```
 
 Ratings sampled faster than they change give jagged bands: with 20 raters,
-each edge of the 90% band follows one rater's value at every one of the
-401 time points, so it jumps whenever that rater moves.
+each edge of the 90% band sits between the two most extreme raters at every
+one of the 401 time points, so it jumps whenever those raters move or
+another rater overtakes them.
 `bin = 0.5` averages each rater within 0.5-second bins (2 Hz, so 81 bins
 across the 40 seconds, the last holding only the sample at 40 s) before
 the bands are computed. `bin_series()` does
