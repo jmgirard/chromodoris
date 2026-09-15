@@ -47,7 +47,7 @@ Suggests as a test oracle only. Vignette → candidate row.
 - [x] T3: `StatChromodoris` ggproto + `stat_chromodoris()` returning long (x, level, ymin, ymax, center); `layer_data()` tests and the ggdist Suggests test.
 - [x] T4: `chromodoris()` wrapper: tidy-eval column selection, cli input errors of class `chromodoris_error_input`, ribbon + line layers, viridis fill, legend labels and order, theme.
 - [x] T5: vdiffr snapshot test; vdiffr and ggdist to Suggests.
-- [ ] T6: Argument-passing tests for `.width`, `center`, `type` on both functions.
+- [x] T6: Argument-passing tests for `.width`, `center`, `type` on both functions.
 - [ ] T7: Roxygen with examples, `_pkgdown.yml` rows, NEWS entry, `document()`/`test()`/`check()`/`check_pkgdown()`.
 
 ## Work log
@@ -63,6 +63,7 @@ Suggests as a test oracle only. Vignette → candidate row.
 - 2026-09-15: T3 done. R/stat-chromodoris.R exports stat_chromodoris() and StatChromodoris. compute_panel pools all series per x, so a group aesthetic is allowed but not needed. Output is long (x, level, ymin, ymax, center) with level a factor widest first and group set to the level index. layer_data tests cover types 7 and 8, both centers, and a live ggdist::mean_qi() comparison per x.
 - 2026-09-15: T4 done. R/chromodoris.R exports chromodoris() with ensym column capture, check_input() raising chromodoris_error_input, a ribbon layer and a line layer on the stat, scale_fill_viridis_d(name = "Band"), and theme_minimal(). Mapping y = after_stat(center) on the line layer removed the input y, so the stat now also returns y = center and the line layer maps nothing. Rendered plot checked by eye.
 - 2026-09-15: T5 done. vdiffr and ggdist added to Suggests (D-001). tests/testthat/test-snapshot.R commits chromodoris-default.svg. The snapshot was shown to fail on a planted .width change before the real plot was pinned.
+- 2026-09-15: T6 done. tests/testthat/test-arguments.R checks that .width, center, and type reach the computation from both functions and the wrapper's line layer, against stats::quantile, mean, and median at one time point.
 
 ## Decisions
 
