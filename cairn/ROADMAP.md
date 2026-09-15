@@ -7,7 +7,7 @@ _Last hygiene check: 2026-09-15 (one short line, replaced each pass — never ap
 
 | ID | Title | Status | Depends on | Priority | File/Archive |
 |---|---|---|---|---|---|
-| M001 | Package skeleton | planned | — | high | milestones/M001-package-skeleton.md |
+| M001 | Package skeleton | in-progress | — | high | milestones/M001-package-skeleton.md |
 | M002 | First stat and wrapper | planned | M001 | high | milestones/M002-stat-and-wrapper.md |
 <!-- rows grouped by status, not sorted by ID; keep only the 3 most recent
      terminal (done or dropped) rows — older ones live in milestones/archive/ + git -->

@@ -1,13 +1,13 @@
 # M001: Package skeleton
 
-- **Status:** planned
+- **Status:** in-progress
 - **Priority:** high
 - **Depends on:** —
 - **Driving RR:** —
 - **Principles touched:** —
 - **Resolves:** —
 - **Surface tier:** user-facing — the installable package is the product, even while empty
-- **Branch/PR:** —
+- **Branch/PR:** m001-package-skeleton
 
 ## Goal
 
@@ -43,7 +43,7 @@ Vignettes → candidate row after M002.
 
 ## Tasks
 
-- [ ] T1: `usethis::create_package()` in place; edit DESCRIPTION (Title, Description, Authors@R, Version 0.0.0.9000); `usethis::use_mit_license()`; `usethis::use_package()` for ggplot2, rlang, cli.
+- [x] T1: `usethis::create_package()` in place; edit DESCRIPTION (Title, Description, Authors@R, Version 0.0.0.9000); `usethis::use_mit_license()`; `usethis::use_package()` for ggplot2, rlang, cli.
 - [ ] T2: `R/chromodoris-package.R` with `@keywords internal`, `@import ggplot2`, `@importFrom rlang .data`, `@importFrom cli cli_abort`; `devtools::document()`.
 - [ ] T3: `usethis::use_testthat(3)`; one placeholder test (e.g. the package namespace loads); `devtools::test()` clean.
 - [ ] T4: `usethis::use_news_md()`; `usethis::use_readme_rmd()` with a two-paragraph description of the Chromodoris plot; `devtools::build_readme()`.
@@ -56,6 +56,8 @@ Vignettes → candidate row after M002.
 - 2026-09-15: criteria audit ran in full mode; returned 7 fixes (imports stub, badge = FALSE, git-diff wording, oracle types, bounded x, wrapper-only errors, verify wording) and 4 questions; all disposed at the gate or autonomously.
 - 2026-09-15: plan gate chose two milestones over one combined because the combined goal needs "and"; falsified by M001 review finding nothing to verify on its own.
 - 2026-09-15: plan gate chose adding CI workflows now over deferring because the files cost nothing without a remote; falsified by the workflows failing on first push for a template reason.
+- 2026-09-15: implement started; branch m001-package-skeleton cut from local main (no remote exists; the operator adds it). Gate: author Jeffrey Girard <me@jmgirard.com>; URL and BugReports point at github.com/jmgirard/chromodoris; .DS_Store added to .gitignore.
+- 2026-09-15: T1 done. `create_package()` refused the git root as a nested project in a non-interactive session, so `use_description()` + `use_namespace()` + `use_mit_license()` + `use_package()` were run instead (the same files). `desc::desc_get_deps()` reads Imports cli, ggplot2, rlang; License `MIT + file LICENSE`; Version 0.0.0.9000.
 
 ## Decisions
 

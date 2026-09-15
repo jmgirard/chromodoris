@@ -1,0 +1,19 @@
+Package: chromodoris
+Title: Chromodoris Plots of Many Time Series
+Version: 0.0.0.9000
+Authors@R: 
+    person("Jeffrey", "Girard", , "me@jmgirard.com", role = c("aut", "cre"))
+Description: Draws the Chromodoris plot: many time series (one per rater
+    or unit) summarized moment by moment as nested quantile ribbons around
+    a center line, as a ggplot2 extension with a low-level stat and a
+    high-level wrapper.
+License: MIT + file LICENSE
+URL: https://github.com/jmgirard/chromodoris
+BugReports: https://github.com/jmgirard/chromodoris/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports: 
+    cli,
+    ggplot2,
+    rlang
+Config/roxygen2/version: 8.1.0
