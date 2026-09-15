@@ -65,6 +65,7 @@ Vignettes → candidate row after M002.
 - 2026-09-15: T6 done. First `devtools::check()` (R 4.6.1): 0 errors, 0 warnings, 2 NOTEs. NOTE 1 (non-standard top-level file CLAUDE.md) fixed by a `^CLAUDE\.md$` .Rbuildignore entry. NOTE 2 ("Problems with news in NEWS.md: No news entries found") stands: R's NEWS.md parser (`tools:::.build_news_db_from_package_NEWS_md`) only recognizes a heading that carries a numeric package version, and AC4 fixes the heading as `# chromodoris (development version)`; the NOTE clears when the release walk retitles the heading to a version. Second check: 0 errors, 0 warnings, 1 NOTE (NOTE 2).
 - 2026-09-15: claim audit: 18 claims read, 6 corrected — DESCRIPTION, man/chromodoris-package.Rd, README.Rmd, README.md. The six were present-tense claims that the package draws the plot with a stat and wrapper; reworded to define the plot type and state that no functions are exported yet. Re-read by the same reader: 0 still false. Check after the rewording: 0 errors, 0 warnings, 1 NOTE (NOTE 2); tests PASS 4.
 - 2026-09-15: all tasks checked; status set to review.
+- 2026-09-15: step-7 approval: m001-package-skeleton approved for merge. Gate also chose creating the public GitHub repo jmgirard/chromodoris now, since no remote existed.
 
 ## Decisions
 
