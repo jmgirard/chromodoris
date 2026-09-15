@@ -1,6 +1,6 @@
 # M003: Time binning
 
-- **Status:** in-progress
+- **Status:** review
 - **Priority:** high
 - **Depends on:** —
 - **Driving RR:** —
@@ -23,7 +23,7 @@ Let users bin every series onto a common time grid of a stated width before the 
 
 - [x] AC1: `bin_series(data, id, time, value, width)` is exported. It returns a data frame with the input's `id`, `time`, and `value` column names holding one row per (series, bin) that has at least one non-missing value in that bin, where a row belongs to bin `k = floor(time / width)` as R computes it, `time` is the midpoint `(k + 0.5) * width`, and `value` is the arithmetic mean of that series' non-missing values in the bin. Tests verify this against two oracle types: a hand-computed fixture of three short series whose expected rows are written out in the test, and an independent base-R computation (`tapply()` over the same `k`) on a seeded data set whose series have different lengths and unsorted rows, include NA values, include a bin with no rows and a bin holding only NA for at least one series, and include negative times, a time exactly on a bin boundary, and times that are not multiples of `width` (times are multiples of 1/8 so `k` is exact).
 - [x] AC2: When `bin` is a width, `stat_chromodoris()` identifies a series by the `group` aesthetic and bins before summarising: on the seeded `sim_raters()` data, `layer_data()` of a line-geom `stat_chromodoris(bin = w)` layer with `group = id` equals `layer_data()` of the same layer without `bin` drawn on `bin_series()` output at width w, in columns x, ymin, ymax, center, y, and level, for a width that does not divide the grid step and for a width larger than the whole time range (one bin); and `layer_data(chromodoris(d, id, time, value, bin = w), i)` for layers i = 1, 2 equals the corresponding `stat_chromodoris(bin = w)` layer data.
-- [ ] AC3: The default path is unchanged: `layer_data()` of `stat_chromodoris()` and of `stat_chromodoris(bin = NULL)` on the seeded `sim_raters()` data equals a fixture recorded from commit 48e2e88 and stored under `tests/testthat`, and `git diff 48e2e88 -- tests/testthat` touches only files this milestone adds.
+- [ ] AC3: The default path is unchanged: `layer_data()` of a line-geom `stat_chromodoris()` layer with `group = id`, and of the same layer with `bin = NULL`, on the seeded `sim_raters()` data equals the fixture `tests/testthat/fixtures/stat-default-48e2e88.rds`, which the committed script `data-raw/stat-default-fixture.R` regenerates from the `R/` tree at commit 48e2e88.
 - [x] AC4: A `width` or `bin` other than `NULL` that is not a single finite number greater than zero signals a condition of class `chromodoris_error_input` from `bin_series()`, from `chromodoris()` at call time, and from `stat_chromodoris()` when the plot is built; the probes `NA`, `Inf`, `0`, `-1`, `c(1, 2)`, `"1"`, and `list(1)` are each tested at each of the three entry points. `stat_chromodoris(bin = w)` on a layer whose `group` is ggplot2's no-group sentinel (every row `group == -1`, no discrete aesthetic mapped) signals `chromodoris_error_input` when the plot is built, and a one-series data set with `group` mapped to its id bins without error.
 - [x] AC5: The roxygen for `bin_series()`, `stat_chromodoris()`, and `chromodoris()` states the bin rule of AC1 in words; the stat's Aesthetics section says `group` must identify the series when `bin` is set; the README example and both plot functions' `@examples` call `bin = w` with the surrounding sentence giving the width in the data's time units and the resulting number of bins; NEWS.md has an entry for the new function and argument; `bin_series` appears in a `_pkgdown.yml` reference section and `pkgdown::check_pkgdown()` passes.
 - [x] AC6: `devtools::document()` produces no diff; `devtools::test()` reports 0 failures and 0 warnings, with skips only for ggdist or vdiffr absent (D-001); `devtools::check()` reports 0 errors, 0 warnings, and no NOTE beyond those present at commit 48e2e88.
@@ -32,7 +32,7 @@ Let users bin every series onto a common time grid of a stated width before the 
 
 - AC1 → T1
 - AC2 → T2, T3
-- AC3 → T2
+- AC3 → T2, T5
 - AC4 → T1, T2, T3
 - AC5 → T4
 - AC6 → T4
@@ -40,9 +40,10 @@ Let users bin every series onto a common time grid of a stated width before the 
 ## Tasks
 
 - [x] T1: Tests first in `tests/testthat/test-bin_series.R` (oracle header naming the hand-computed and independent-implementation oracles; AC1 probes; AC4 width probes). Implement `R/bin_series.R` with `bin_series()` and `check_bin()` reused by the plot functions; export.
-- [x] T2: Record the AC3 fixture from 48e2e88 first. In `R/stat-chromodoris.R` add `bin = NULL` to `stat_chromodoris()` and the params; validate in `setup_params` (lesson: ggplot2 wraps a Stat's `cli_abort`, `expect_error(class =)` still sees it); in `compute_panel` bin per `group` via the AC1 rule before the split-by-x path, aborting on the no-group sentinel; AC2, AC3, AC4 stat tests on line layers (lesson: ribbons overwrite `y`).
+- [x] T2: Record the AC3 fixture from 48e2e88 first. In `R/stat-chromodoris.R` add `bin = NULL` to `stat_chromodoris()` and the params; validate in `setup_params` (lesson: ggplot2 wraps a Stat's `cli_abort`, `expect_error(class =)` still sees it); in `compute_panel` bin per `group` via the AC1 rule before the split-by-x path, aborting on the no-group sentinel; AC2, AC3, AC4 stat tests on line layers (lesson: ribbons overwrite `y`). Check note: `git diff --numstat 48e2e88 -- tests/testthat` shows 0 deletions on the three `.R` files (pre-existing tests appended to, none removed).
 - [x] T3: In `R/chromodoris.R` add `bin = NULL`, validate at call time, pass to both layers; AC2 wrapper equality and AC4 call-time tests in `test-chromodoris.R`.
 - [x] T4: Docs: roxygen text and examples per AC5, README example at a stated width then `devtools::build_readme()` (lesson: the pre-commit hook refuses stale README.md), NEWS entry, `_pkgdown.yml` row, DESIGN.md Function Families and Architecture updated for the built binning method; `document()`, `test()`, `check()` per AC6.
+- [x] T5: Write `data-raw/stat-default-fixture.R`, which extracts the `R/` tree, `DESCRIPTION`, and `NAMESPACE` at commit 48e2e88 with `git archive`, loads that package copy, and writes the line-geom `layer_data()` of the seeded `sim_raters()` data to `tests/testthat/fixtures/stat-default-48e2e88.rds`. Run it and confirm the regenerated file equals the committed fixture. `.Rbuildignore` covers `data-raw`.
 
 ## Work log
 
@@ -65,6 +66,10 @@ Let users bin every series onto a common time grid of a stated width before the 
 - 2026-09-15: claim audit: 21 claims read, 2 corrected — README.Rmd, R/stat-chromodoris.R (the "two raters" gloss and the `@param bin` bin rule; both re-read VERIFIED, 0 wrong).
 - 2026-09-15: all tasks done; `document()` no diff, `test()` 1439 pass 0 fail, `check()` 0 errors 0 warnings 1 NOTE (NEWS heading, LESSONS M001); status set to review.
 - 2026-09-15: review: AC1, AC2, AC4, AC5, AC6 verified with fresh evidence (Review section). amendment return: AC3 — "and `git diff 48e2e88 -- tests/testthat` adds files or adds lines to existing files only, with no deleted lines (0 lines starting with `-` in that diff)". The proposed clause replaces "touches only files this milestone adds", which T2 and T3 contradict by adding tests to test-chromodoris.R and test-stat_chromodoris.R. Status set to in-progress for the amendment alone (amendment-return count 1, defect-return count 0).
+- 2026-09-15: mini gate accepted replacing the AC3 diff clause with a no-deleted-lines clause. re-audit: AC3 (full) — unsound "remains unchanged" inference, unbounded "every test", instrument property, unverified fixture provenance, brittle `-` rule, no wrapper fixture. Fixed the first, second, and fifth (numstat wording) before re-entry.
+- 2026-09-15: re-audit: AC3 (full) — the criterion names the default ribbon geom, whose `layer_data()` does not equal the line-geom fixture, numstat prints `-` for the binary fixture, instrument property, fixture provenance unverified (PROFILE test-doctrine fixture rule), no wrapper fixture. Second re-audit line, so further AC3 wording went to the user.
+- 2026-09-15: user gate: amendment return: AC3 — "`layer_data()` of a line-geom `stat_chromodoris()` layer with `group = id`, and of the same layer with `bin = NULL`, on the seeded `sim_raters()` data equals the fixture `tests/testthat/fixtures/stat-default-48e2e88.rds`, which the committed script `data-raw/stat-default-fixture.R` regenerates from the `R/` tree at commit 48e2e88". The diff check moved to a T2 note. T5 added (generator script) and Coverage AC3 → T2, T5. Wrapper default-path fixture rejected: the wrapper's two layers are tested equal to the stat's layers in test-chromodoris.R, so a regression surfaces there.
+- 2026-09-15: T5 done: `data-raw/stat-default-fixture.R` regenerates the fixture from a `git archive` of 48e2e88 (R/, DESCRIPTION, NAMESPACE). The regenerated file is byte-identical to the committed fixture (`identical()` TRUE, `git status` clean on the .rds). `^data-raw$` added to `.Rbuildignore`. `test()` 1439 pass 0 fail 0 warn 0 skip. Claim audit not re-run (one-pass stopping rule). The script header's claims are written from this run's output and the commands above. Status set to review.
 
 ## Decisions
 
