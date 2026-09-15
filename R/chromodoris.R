@@ -13,16 +13,23 @@
 #' @return A ggplot object with two layers: a ribbon layer built on
 #'   [stat_chromodoris()] and a line layer for the center.
 #' @examples
+#' # 20 raters sampled 10 times per second for 40 seconds (401 points each).
 #' set.seed(1)
-#' d <- expand.grid(id = 1:20, time = 1:40)
-#' d$value <- sin(d$time / 6) + rnorm(nrow(d), sd = 0.5)
+#' d <- expand.grid(time = seq(0, 40, by = 0.1), id = 1:20)
+#' d$value <- sin(d$time / 6) + rnorm(20, sd = 0.3)[d$id] +
+#'   ave(rnorm(nrow(d), sd = 0.06), d$id,
+#'       FUN = function(e) stats::filter(e, 0.985, method = "recursive"))
 #' chromodoris(d, id, time, value)
+#' # Bin each rater to 0.5-second bins (2 Hz): 81 bins, the last holding
+#' # only the sample at 40 s.
+#' chromodoris(d, id, time, value, bin = 0.5)
 #' chromodoris(d, "id", "time", "value", .width = c(0.5, 0.95),
-#'             center = "median")
+#'             center = "median", bin = 0.5)
 #' @export
 chromodoris <- function(data, id, time, value,
                         .width = c(0.5, 0.7, 0.9),
-                        center = c("mean", "median"), type = 7) {
+                        center = c("mean", "median"), type = 7,
+                        bin = NULL) {
   center <- match.arg(center)
   id <- rlang::as_name(rlang::ensym(id))
   time <- rlang::as_name(rlang::ensym(time))
@@ -30,13 +37,15 @@ chromodoris <- function(data, id, time, value,
   check_input(data, id, time, value)
   check_width(.width)
   check_type(type)
+  check_bin(bin, allow_null = TRUE, arg = "bin")
 
   ggplot(data, aes(x = .data[[time]], y = .data[[value]],
                    group = .data[[id]])) +
     stat_chromodoris(aes(fill = after_stat(level)),
-                     .width = .width, center = center, type = type) +
+                     .width = .width, center = center, type = type,
+                     bin = bin) +
     stat_chromodoris(geom = "line", .width = max(.width), center = center,
-                     type = type, show.legend = FALSE) +
+                     type = type, bin = bin, show.legend = FALSE) +
     scale_fill_viridis_d(name = "Band") +
     labs(x = time, y = value) +
     theme_minimal()

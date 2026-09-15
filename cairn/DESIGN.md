@@ -30,10 +30,11 @@ summary that reads at a glance.
 
 ## Function Families
 
-_Planned, not built:_
+_Summary and Layer are built (M002); Alignment is partly built (M003):_
 
 - **Alignment.** Put many series with different timestamps and lengths onto
-  a common time grid (binning or interpolation, user-settable).
+  a common time grid. Built: binning to a stated width (`bin_series()`,
+  `bin =` on the stat and wrapper; M003). Planned: interpolation.
 - **Summary.** Per-grid-point quantile bands and a center line (mean or
   median).
 - **Layer.** A ggplot2 `Stat` that feeds `geom_ribbon`, plus the wrapper.
@@ -83,7 +84,12 @@ _None adopted yet._
 
 ## Architecture
 
-_Nothing built yet._
+- `R/summarise_bands.R`: band edges and center for one numeric vector.
+- `R/bin_series.R`: `bin_series()` (exported), `bin_core()` (shared with
+  the stat), `check_bin()`.
+- `R/stat-chromodoris.R`: `StatChromodoris` bins per `group` when `bin` is
+  set, then pools every series per `x` through `summarise_bands()`.
+- `R/chromodoris.R`: the wrapper, two stat layers, and the input checks.
 
 ## Known issues
 

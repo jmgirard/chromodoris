@@ -14,6 +14,7 @@ stat_chromodoris(
   .width = c(0.5, 0.7, 0.9),
   center = c("mean", "median"),
   type = 7,
+  bin = NULL,
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE
@@ -101,6 +102,14 @@ Default \code{c(0.5, 0.7, 0.9)}.}
 
 \item{type}{Quantile algorithm passed to \code{\link[stats:quantile]{stats::quantile()}}. Default 7.}
 
+\item{bin}{\code{NULL} (default) to summarise at each observed \code{x}, or a
+single positive number: the bin width in \code{x} units. Each series is
+first averaged within bins of that width, exactly as \code{\link[=bin_series]{bin_series()}}
+does: bin \code{k} covers \verb{[k * bin, (k + 1) * bin)}, and the bands are
+computed at the bin midpoints \code{(k + 0.5) * bin}. The bin index is
+computed in floating point, so a boundary time can fall in the lower
+bin when \code{x / bin} is not exactly an integer.}
+
 \item{na.rm}{If \code{FALSE} (default), missing values are removed with a
 warning. If \code{TRUE}, they are removed silently.}
 
@@ -129,9 +138,12 @@ upper edge plus one center value. The default geom is a ribbon. Map
 }
 \section{Aesthetics}{
 
-\code{stat_chromodoris()} requires \code{x} (time) and \code{y} (value). Mapping
-\code{group} to a series id is allowed but not needed, because every series
-in a panel is pooled at each \code{x}.
+\code{stat_chromodoris()} requires \code{x} (time) and \code{y} (value). Without \code{bin},
+mapping \code{group} to a series id is allowed but not needed, because every
+series in a panel is pooled at each \code{x}. With \code{bin} set, \code{group} must
+identify the series, because each series is binned on its own before
+the pooling; a layer with no \code{group} mapping then signals an error when
+the plot is built.
 }
 
 \section{Computed variables}{
@@ -152,11 +164,20 @@ because every series is pooled.
 }
 
 \examples{
+# 20 raters sampled 10 times per second for 40 seconds (401 points each).
 set.seed(1)
-d <- expand.grid(id = 1:20, time = 1:40)
-d$value <- sin(d$time / 6) + rnorm(nrow(d), sd = 0.5)
+d <- expand.grid(time = seq(0, 40, by = 0.1), id = 1:20)
+d$value <- sin(d$time / 6) + rnorm(20, sd = 0.3)[d$id] +
+  ave(rnorm(nrow(d), sd = 0.06), d$id,
+      FUN = function(e) stats::filter(e, 0.985, method = "recursive"))
 library(ggplot2)
 ggplot(d, aes(time, value)) +
   stat_chromodoris(aes(fill = after_stat(level)), alpha = 0.8) +
   stat_chromodoris(geom = "line", .width = 0.9)
+# Bin each rater to 0.5-second bins (2 Hz): 81 bins, the last holding
+# only the sample at 40 s.
+# With bin set, group must identify the series.
+ggplot(d, aes(time, value, group = id)) +
+  stat_chromodoris(aes(fill = after_stat(level)), bin = 0.5) +
+  stat_chromodoris(geom = "line", .width = 0.9, bin = 0.5)
 }

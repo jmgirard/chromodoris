@@ -11,7 +11,8 @@ chromodoris(
   value,
   .width = c(0.5, 0.7, 0.9),
   center = c("mean", "median"),
-  type = 7
+  type = 7,
+  bin = NULL
 )
 }
 \arguments{
@@ -27,6 +28,14 @@ Default \code{c(0.5, 0.7, 0.9)}.}
 \item{center}{One of \code{"mean"} (default) or \code{"median"}.}
 
 \item{type}{Quantile algorithm passed to \code{\link[stats:quantile]{stats::quantile()}}. Default 7.}
+
+\item{bin}{\code{NULL} (default) to summarise at each observed \code{x}, or a
+single positive number: the bin width in \code{x} units. Each series is
+first averaged within bins of that width, exactly as \code{\link[=bin_series]{bin_series()}}
+does: bin \code{k} covers \verb{[k * bin, (k + 1) * bin)}, and the bands are
+computed at the bin midpoints \code{(k + 0.5) * bin}. The bin index is
+computed in floating point, so a boundary time can fall in the lower
+bin when \code{x / bin} is not exactly an integer.}
 }
 \value{
 A ggplot object with two layers: a ribbon layer built on
@@ -39,10 +48,16 @@ scale, a band legend, and \code{\link[ggplot2:theme_minimal]{ggplot2::theme_mini
 ggplot2 layers, scales, or themes to the result to customise it.
 }
 \examples{
+# 20 raters sampled 10 times per second for 40 seconds (401 points each).
 set.seed(1)
-d <- expand.grid(id = 1:20, time = 1:40)
-d$value <- sin(d$time / 6) + rnorm(nrow(d), sd = 0.5)
+d <- expand.grid(time = seq(0, 40, by = 0.1), id = 1:20)
+d$value <- sin(d$time / 6) + rnorm(20, sd = 0.3)[d$id] +
+  ave(rnorm(nrow(d), sd = 0.06), d$id,
+      FUN = function(e) stats::filter(e, 0.985, method = "recursive"))
 chromodoris(d, id, time, value)
+# Bin each rater to 0.5-second bins (2 Hz): 81 bins, the last holding
+# only the sample at 40 s.
+chromodoris(d, id, time, value, bin = 0.5)
 chromodoris(d, "id", "time", "value", .width = c(0.5, 0.95),
-            center = "median")
+            center = "median", bin = 0.5)
 }
