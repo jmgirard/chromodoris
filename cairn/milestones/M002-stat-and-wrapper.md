@@ -46,7 +46,7 @@ Suggests as a test oracle only. Vignette → candidate row.
 - [x] T2: Internal `summarise_bands(values, .width, center, type)` in base R; oracle tests against `stats::quantile` types 7 and 8 and `stats::median` (RB tripwire: no-oracle if a summary beyond quantiles is added).
 - [x] T3: `StatChromodoris` ggproto + `stat_chromodoris()` returning long (x, level, ymin, ymax, center); `layer_data()` tests and the ggdist Suggests test.
 - [x] T4: `chromodoris()` wrapper: tidy-eval column selection, cli input errors of class `chromodoris_error_input`, ribbon + line layers, viridis fill, legend labels and order, theme.
-- [ ] T5: vdiffr snapshot test; vdiffr and ggdist to Suggests.
+- [x] T5: vdiffr snapshot test; vdiffr and ggdist to Suggests.
 - [ ] T6: Argument-passing tests for `.width`, `center`, `type` on both functions.
 - [ ] T7: Roxygen with examples, `_pkgdown.yml` rows, NEWS entry, `document()`/`test()`/`check()`/`check_pkgdown()`.
 
@@ -62,6 +62,7 @@ Suggests as a test oracle only. Vignette → candidate row.
 - 2026-09-15: T2 done. R/summarise_bands.R (23 lines) with oracle tests against stats::quantile types 7 and 8 (live) and hand-computed type-7 edges on 1:10 (closed-form). No summary beyond quantiles, mean, and median was added, so the no-oracle tripwire did not fire. DESIGN Conventions now names where oracle records live (test file headers).
 - 2026-09-15: T3 done. R/stat-chromodoris.R exports stat_chromodoris() and StatChromodoris. compute_panel pools all series per x, so a group aesthetic is allowed but not needed. Output is long (x, level, ymin, ymax, center) with level a factor widest first and group set to the level index. layer_data tests cover types 7 and 8, both centers, and a live ggdist::mean_qi() comparison per x.
 - 2026-09-15: T4 done. R/chromodoris.R exports chromodoris() with ensym column capture, check_input() raising chromodoris_error_input, a ribbon layer and a line layer on the stat, scale_fill_viridis_d(name = "Band"), and theme_minimal(). Mapping y = after_stat(center) on the line layer removed the input y, so the stat now also returns y = center and the line layer maps nothing. Rendered plot checked by eye.
+- 2026-09-15: T5 done. vdiffr and ggdist added to Suggests (D-001). tests/testthat/test-snapshot.R commits chromodoris-default.svg. The snapshot was shown to fail on a planted .width change before the real plot was pinned.
 
 ## Decisions
 
