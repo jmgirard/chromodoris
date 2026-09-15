@@ -1,4 +1,5 @@
 ^cairn$
+^CLAUDE\.md$
 ^LICENSE\.md$
 ^README\.Rmd$
 ^\.github$

@@ -48,7 +48,7 @@ Vignettes → candidate row after M002.
 - [x] T3: `usethis::use_testthat(3)`; one placeholder test (e.g. the package namespace loads); `devtools::test()` clean.
 - [x] T4: `usethis::use_news_md()`; `usethis::use_readme_rmd()` with a two-paragraph description of the Chromodoris plot; `devtools::build_readme()`.
 - [x] T5: `usethis::use_github_action("check-standard", badge = FALSE)` and `("test-coverage", badge = FALSE)`; `usethis::use_pkgdown()`; confirm `.Rbuildignore` entries.
-- [ ] T6: `devtools::check()`; record each NOTE and its justification.
+- [x] T6: `devtools::check()`; record each NOTE and its justification.
 
 ## Work log
 
@@ -62,6 +62,7 @@ Vignettes → candidate row after M002.
 - 2026-09-15: T3 done. testthat 3e set up; tests/testthat/test-package.R checks the namespace loads with the three declared imports. `devtools::test()`: FAIL 0, WARN 0, SKIP 0, PASS 4.
 - 2026-09-15: T4 done. NEWS.md dev heading with one skeleton line (the usethis "Initial CRAN submission" line replaced; the package is GitHub-only). README.Rmd: two paragraphs on the plot plus a pak install line; knitted twice, `git diff --exit-code README.md` returned 0. usethis also installed a local `.git/hooks/pre-commit` that refuses commits when README.Rmd is newer than README.md.
 - 2026-09-15: T5 done. usethis 3.2.1 wrote .github/workflows/R-CMD-check.yaml and test-coverage.yaml from r-lib/actions v2 examples, and _pkgdown.yml (url left as ~ until a site exists). .Rbuildignore now holds ^cairn$, ^LICENSE\.md$, ^README\.Rmd$, ^\.github$, ^_pkgdown\.yml$, ^docs$, ^pkgdown$; .gitignore gained docs.
+- 2026-09-15: T6 done. First `devtools::check()` (R 4.6.1): 0 errors, 0 warnings, 2 NOTEs. NOTE 1 (non-standard top-level file CLAUDE.md) fixed by a `^CLAUDE\.md$` .Rbuildignore entry. NOTE 2 ("Problems with news in NEWS.md: No news entries found") stands: R's NEWS.md parser (`tools:::.build_news_db_from_package_NEWS_md`) only recognizes a heading that carries a numeric package version, and AC4 fixes the heading as `# chromodoris (development version)`; the NOTE clears when the release walk retitles the heading to a version. Second check: 0 errors, 0 warnings, 1 NOTE (NOTE 2).
 
 ## Decisions
 
