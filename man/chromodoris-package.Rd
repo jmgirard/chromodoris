@@ -2,7 +2,6 @@
 % Please edit documentation in R/chromodoris-package.R
 \docType{package}
 \name{chromodoris-package}
-\alias{chromodoris}
 \alias{chromodoris-package}
 \title{chromodoris: Chromodoris Plots of Many Time Series}
 \description{

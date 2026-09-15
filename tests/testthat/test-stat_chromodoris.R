@@ -13,6 +13,9 @@ stat_data <- function(...) {
 test_that("one row per (x, level) with the promised columns", {
   ld <- stat_data()
   expect_true(all(c("x", "level", "ymin", "ymax", "center") %in% names(ld)))
+  # The ribbon geom overwrites y with ymin, so check y on a line layer.
+  line_ld <- stat_data(geom = "line")
+  expect_equal(line_ld$y, line_ld$center)
   expect_equal(nrow(ld), 60 * 3)
   expect_equal(anyDuplicated(ld[c("x", "level")]), 0)
   expect_equal(levels(ld$level), c("90%", "70%", "50%"))

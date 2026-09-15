@@ -142,7 +142,8 @@ The stat returns one row per (\code{x}, \code{level}):
 widest band first.
 \item \code{.width}: the band width as a number.
 \item \code{ymin}, \code{ymax}: the band's lower and upper edge.
-\item \code{center}: the mean (default) or median of the pooled values.
+\item \code{center}: the mean (default) or median of the pooled values. It is
+also returned as \code{y}, so \code{geom = "line"} draws the center line.
 }
 }
 
@@ -153,6 +154,5 @@ d$value <- sin(d$time / 6) + rnorm(nrow(d), sd = 0.5)
 library(ggplot2)
 ggplot(d, aes(time, value)) +
   stat_chromodoris(aes(fill = after_stat(level)), alpha = 0.8) +
-  stat_chromodoris(aes(y = after_stat(center)), geom = "line",
-                   .width = 0.9)
+  stat_chromodoris(geom = "line", .width = 0.9)
 }
