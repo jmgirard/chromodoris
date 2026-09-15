@@ -67,6 +67,8 @@ Suggests as a test oracle only. Vignette → candidate row.
 - 2026-09-15: T7 done. _pkgdown.yml reference rows for both exports, NEWS entries, DESCRIPTION Description updated, README usage chunk with a rendered figure. check_pkgdown() refused to run without a url (M001 lesson), so _pkgdown.yml and DESCRIPTION URL now carry https://jmgirard.github.io/chromodoris/ ahead of the site existing. Results: document() no diff, test() 1366 pass, check() 0 errors 0 warnings and only the M001 NEWS note, check_pkgdown() clean, run_examples() clean.
 - 2026-09-15: claim audit: 38 claims read, 1 corrected — NEWS.md, R/stat-chromodoris.R, R/chromodoris.R. The NEWS entry promised the input error class for every input error, but a bad .width aborted with a plain error inside ggplot2, where tryCatch() cannot see a class on the wrapped condition. Fix: chromodoris() now validates .width at call time through check_width(), which the stat also uses, and NEWS names data, columns, and .width. The reader also flagged committed testthat _problems/ scratch files, now removed and ignored.
 - 2026-09-15: all tasks checked. Final results: document() no diff, test() 1369 pass, check() 0 errors 0 warnings 1 note (M001 NEWS heading), check_pkgdown() clean. Status set to review.
+- 2026-09-15: review ran. Five criteria verified, gate clean, nine diff-bug findings triaged at the chip: four fixed on the branch, three deferred to candidate rows, two rejected.
+- 2026-09-15: step-7 approval: m002-stat-and-wrapper approved for merge
 
 ## Decisions
 
@@ -82,12 +84,13 @@ Fresh evidence gathered 2026-09-15 on branch m002-stat-and-wrapper at 98c63ef. M
 - Driving RR: none, so there are no projection-vs-outcome pairs.
 - Consistency gate: cairn_validate.py passed every check after the evidence and ticks landed. No DESIGN principle changed, so cairn_impact.py was skipped. Toolchain checks from the r-package profile: document() no diff, generated files untouched by hand, README in sync, check_pkgdown() clean, NEWS entries present, check() clean with the one justified NOTE.
 - Independent review, three lenses. The blame-history lens and the prior-review lens reported no findings and no prior-review evidence on the touched files (no GitHub review threads exist). The diff-bug lens reported nine findings, ranked by that reviewer:
-  1. Two .width values that round to the same percent give duplicated factor levels and the layer fails with an unrelated message (R/stat-chromodoris.R band_labels). Disposition: pending gate.
-  2. type is not validated at call time, so type = 99 yields an empty plot with warnings instead of a chromodoris_error_input condition (R/chromodoris.R, R/stat-chromodoris.R). Disposition: pending gate.
-  3. A time point where every value is missing emits no row, so the ribbon interpolates across the gap. Disposition: pending gate.
-  4. One series per time point draws bands of zero height with no signal. Disposition: pending gate.
-  5. StatChromodoris declares no dropped_aes, so extra aesthetics such as colour vanish silently. Disposition: pending gate.
-  6. summarise_bands() returns NA on an all-missing vector, unreachable from the layer. Disposition: pending gate.
-  7. The roxygen says center is also returned as y. On the default ribbon layer, y equals ymin. Disposition: pending gate.
-  8. center is unvalidated when StatChromodoris is used through a bare layer() call. Disposition: pending gate.
-  9. Duplicate (id, time) rows are pooled without notice. Disposition: pending gate.
+  1. Two .width values that round to the same percent give duplicated factor levels and the layer fails with an unrelated message (R/stat-chromodoris.R band_labels). Disposition: fixed now. check_width() rejects such widths with the input error class, tested from both functions.
+  2. type is not validated at call time, so type = 99 yields an empty plot with warnings instead of a chromodoris_error_input condition (R/chromodoris.R, R/stat-chromodoris.R). Disposition: fixed now. check_type() requires one integer from 1 to 9, called by the wrapper and by the stat's setup_params, tested from both functions, and named in NEWS.
+  3. A time point where every value is missing emits no row, so the ribbon interpolates across the gap. Disposition: follow-up, folded into the ROADMAP ragged-end candidate row.
+  4. One series per time point draws bands of zero height with no signal. Disposition: follow-up, folded into the same row.
+  5. StatChromodoris declares no dropped_aes, so extra aesthetics such as colour vanish silently. Disposition: fixed now. The stat declares the non-positional aesthetics it drops, the roxygen says so, and a test maps colour and expects no warning.
+  6. summarise_bands() returns NA on an all-missing vector, unreachable from the layer. Disposition: rejected, not reachable from the exported surface.
+  7. The roxygen says center is also returned as y. On the default ribbon layer, y equals ymin. Disposition: fixed now. The computed-variables section now states that a ribbon geom replaces y with ymin.
+  8. center is unvalidated when StatChromodoris is used through a bare layer() call. Disposition: rejected, off the documented path.
+  9. Duplicate (id, time) rows are pooled without notice. Disposition: follow-up, new ROADMAP candidate row for an input check.
+- After the fixes: document() no diff, test() 1389 pass, check() 0 errors, 0 warnings, the one justified NOTE, check_pkgdown() clean. The gate approved the fix-now set and the merge in one chip.

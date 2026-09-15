@@ -84,3 +84,34 @@ test_that("bad .width aborts", {
   expect_error(chromodoris(sim, id, time, value, .width = NA_real_),
                class = "chromodoris_error_input")
 })
+
+test_that(".width values that round to the same percent abort", {
+  expect_error(chromodoris(sim, id, time, value, .width = c(0.9, 0.904)),
+               class = "chromodoris_error_input")
+  expect_error(chromodoris(sim, id, time, value, .width = c(0.9, 0.904)),
+               "same percent")
+  p <- ggplot(sim, aes(time, value)) + stat_chromodoris(.width = c(0.9, 0.904))
+  expect_error(layer_data(p), class = "chromodoris_error_input")
+  # Distinct percents still pass.
+  ld <- stat_data(.width = c(0.9, 0.91))
+  expect_equal(levels(ld$level), c("91%", "90%"))
+})
+
+test_that("bad type aborts at call time from both functions", {
+  for (bad in list(99, 0, 7.5, NA_real_, c(7, 8), "7")) {
+    expect_error(chromodoris(sim, id, time, value, type = bad),
+                 class = "chromodoris_error_input")
+    p <- ggplot(sim, aes(time, value)) + stat_chromodoris(type = bad)
+    expect_error(layer_data(p), class = "chromodoris_error_input")
+  }
+  expect_error(chromodoris(sim, id, time, value, type = 99), "1 to 9")
+})
+
+test_that("extra aesthetics are dropped without a warning", {
+  p <- ggplot(sim, aes(time, value, colour = id)) + stat_chromodoris()
+  expect_no_warning(ld <- layer_data(p, 1))
+  # The ribbon geom adds its default colour (NA) after the stat, so the
+  # mapped rater colours are gone when every value is NA.
+  expect_true(all(is.na(ld$colour)))
+  expect_equal(nrow(ld), 60 * 3)
+})

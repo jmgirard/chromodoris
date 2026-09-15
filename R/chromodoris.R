@@ -29,6 +29,7 @@ chromodoris <- function(data, id, time, value,
   value <- rlang::as_name(rlang::ensym(value))
   check_input(data, id, time, value)
   check_width(.width)
+  check_type(type)
 
   ggplot(data, aes(x = .data[[time]], y = .data[[value]],
                    group = .data[[id]])) +
@@ -67,5 +68,18 @@ check_width <- function(.width) {
     cli_abort("{.arg .width} must be numeric with every value in (0, 1).",
               class = "chromodoris_error_input")
   }
+  if (anyDuplicated(band_labels(unique(.width)))) {
+    cli_abort("{.arg .width} values must not round to the same percent.",
+              class = "chromodoris_error_input")
+  }
   invisible(.width)
+}
+
+check_type <- function(type) {
+  if (!is.numeric(type) || length(type) != 1 || is.na(type) ||
+      type != round(type) || type < 1 || type > 9) {
+    cli_abort("{.arg type} must be a single integer from 1 to 9.",
+              class = "chromodoris_error_input")
+  }
+  invisible(type)
 }

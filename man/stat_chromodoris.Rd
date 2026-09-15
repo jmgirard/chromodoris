@@ -142,9 +142,13 @@ The stat returns one row per (\code{x}, \code{level}):
 widest band first.
 \item \code{.width}: the band width as a number.
 \item \code{ymin}, \code{ymax}: the band's lower and upper edge.
-\item \code{center}: the mean (default) or median of the pooled values. It is
-also returned as \code{y}, so \code{geom = "line"} draws the center line.
+\item \code{center}: the mean (default) or median of the pooled values. The stat
+also sets \code{y} to the center, so \code{geom = "line"} draws the center line.
+A ribbon geom replaces \code{y} with \code{ymin} when it draws.
 }
+
+Other aesthetics mapped to the input, such as \code{colour}, are dropped,
+because every series is pooled.
 }
 
 \examples{

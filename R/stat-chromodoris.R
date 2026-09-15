@@ -17,8 +17,12 @@
 #'   widest band first.
 #' - `.width`: the band width as a number.
 #' - `ymin`, `ymax`: the band's lower and upper edge.
-#' - `center`: the mean (default) or median of the pooled values. It is
-#'   also returned as `y`, so `geom = "line"` draws the center line.
+#' - `center`: the mean (default) or median of the pooled values. The stat
+#'   also sets `y` to the center, so `geom = "line"` draws the center line.
+#'   A ribbon geom replaces `y` with `ymin` when it draws.
+#'
+#' Other aesthetics mapped to the input, such as `colour`, are dropped,
+#' because every series is pooled.
 #'
 #' @inheritParams ggplot2::stat_identity
 #' @param .width Numeric vector of central band widths in (0, 1).
@@ -60,9 +64,12 @@ stat_chromodoris <- function(mapping = NULL, data = NULL, geom = "ribbon",
 StatChromodoris <- ggproto(
   "StatChromodoris", Stat,
   required_aes = c("x", "y"),
+  dropped_aes = c("colour", "fill", "alpha", "linetype", "linewidth",
+                  "size", "shape", "weight"),
 
   setup_params = function(data, params) {
     check_width(params$.width)
+    check_type(params$type)
     params$.width <- sort(unique(params$.width), decreasing = TRUE)
     params
   },
