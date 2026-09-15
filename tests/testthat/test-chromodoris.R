@@ -26,7 +26,7 @@ test_that("the fill scale is discrete viridis with labels 90%, 70%, 50%", {
   expect_equal(fill_scale$get_breaks(), c("90%", "70%", "50%"),
                ignore_attr = TRUE)
   expect_equal(unname(fill_scale$map(c("90%", "70%", "50%"))),
-               viridisLite::viridis(3))
+               scale_fill_viridis_d()$palette(3))
   ld <- layer_data(p, 1)
   expect_equal(nrow(ld), 60 * 3)
 })
