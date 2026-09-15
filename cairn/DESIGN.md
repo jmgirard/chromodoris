@@ -54,11 +54,12 @@ _Planned, not built:_
 
 ### Inviolable
 
-_Pending Phase 2._
+_None adopted yet. Phase 2 was deferred on 2026-09-15 until the package
+exists (see ROADMAP candidate). The ledger below stays banked._
 
 ### Guiding
 
-_Pending Phase 2._
+_None adopted yet._
 
 ### Banked candidates (Phase 1 ledger, consumed by Phase 2)
 
