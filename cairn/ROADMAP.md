@@ -7,7 +7,7 @@ _Last hygiene check: 2026-09-15, M003 planned; alignment candidate row narrowed 
 
 | ID | Title | Status | Depends on | Priority | File/Archive |
 |---|---|---|---|---|---|
-| M003 | Time binning | review | — | high | milestones/M003-time-binning.md |
+| M003 | Time binning | in-progress | — | high | milestones/M003-time-binning.md |
 | M002 | First stat and wrapper | done | M001 | high | milestones/archive/M002-stat-and-wrapper.md |
 | M001 | Package skeleton | done | — | high | milestones/archive/M001-package-skeleton.md |
 <!-- rows grouped by status, not sorted by ID; keep only the 3 most recent
