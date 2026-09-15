@@ -45,7 +45,7 @@ Vignettes → candidate row after M002.
 
 - [x] T1: `usethis::create_package()` in place; edit DESCRIPTION (Title, Description, Authors@R, Version 0.0.0.9000); `usethis::use_mit_license()`; `usethis::use_package()` for ggplot2, rlang, cli.
 - [x] T2: `R/chromodoris-package.R` with `@keywords internal`, `@import ggplot2`, `@importFrom rlang .data`, `@importFrom cli cli_abort`; `devtools::document()`.
-- [ ] T3: `usethis::use_testthat(3)`; one placeholder test (e.g. the package namespace loads); `devtools::test()` clean.
+- [x] T3: `usethis::use_testthat(3)`; one placeholder test (e.g. the package namespace loads); `devtools::test()` clean.
 - [ ] T4: `usethis::use_news_md()`; `usethis::use_readme_rmd()` with a two-paragraph description of the Chromodoris plot; `devtools::build_readme()`.
 - [ ] T5: `usethis::use_github_action("check-standard", badge = FALSE)` and `("test-coverage", badge = FALSE)`; `usethis::use_pkgdown()`; confirm `.Rbuildignore` entries.
 - [ ] T6: `devtools::check()`; record each NOTE and its justification.
@@ -59,6 +59,7 @@ Vignettes → candidate row after M002.
 - 2026-09-15: implement started; branch m001-package-skeleton cut from local main (no remote exists; the operator adds it). Gate: author Jeffrey Girard <me@jmgirard.com>; URL and BugReports point at github.com/jmgirard/chromodoris; .DS_Store added to .gitignore.
 - 2026-09-15: T1 done. `create_package()` refused the git root as a nested project in a non-interactive session, so `use_description()` + `use_namespace()` + `use_mit_license()` + `use_package()` were run instead (the same files). `desc::desc_get_deps()` reads Imports cli, ggplot2, rlang; License `MIT + file LICENSE`; Version 0.0.0.9000.
 - 2026-09-15: T2 done. `R/chromodoris-package.R` documents the package; `document()` writes NAMESPACE with import(ggplot2), importFrom(cli, cli_abort), importFrom(rlang, .data) and man/chromodoris-package.Rd.
+- 2026-09-15: T3 done. testthat 3e set up; tests/testthat/test-package.R checks the namespace loads with the three declared imports. `devtools::test()`: FAIL 0, WARN 0, SKIP 0, PASS 4.
 
 ## Decisions
 
