@@ -1,3 +1,10 @@
 cairn/references/sources/
+.DS_Store
 cairn/.merge-approved
 cairn/.merge-approved.pending
+docs
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.httr-oauth

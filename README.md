@@ -1,0 +1,30 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# chromodoris
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+chromodoris is an R package in development for one plot type, the
+Chromodoris plot. A Chromodoris plot takes many time series, one per
+participant or unit, and summarizes them moment by moment as nested
+quantile ribbons (for example the inner 90%, 70%, and 50% of values)
+around a center line, in place of a spaghetti plot of overlaid series.
+
+The package exports no functions yet. It is planned as a ggplot2
+extension with two layers: a low-level stat that computes the bands from
+long data (columns for series id, time, and value) inside any ggplot
+pipeline, and a high-level wrapper that draws the whole plot with
+default scales and theme.
+
+## Installation
+
+The package is not on CRAN. Once the GitHub repository is public, you
+can install the development version with:
+
+``` r
+# install.packages("pak")
+pak::pak("jmgirard/chromodoris")
+```
