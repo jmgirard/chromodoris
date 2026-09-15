@@ -47,7 +47,7 @@ Vignettes → candidate row after M002.
 - [x] T2: `R/chromodoris-package.R` with `@keywords internal`, `@import ggplot2`, `@importFrom rlang .data`, `@importFrom cli cli_abort`; `devtools::document()`.
 - [x] T3: `usethis::use_testthat(3)`; one placeholder test (e.g. the package namespace loads); `devtools::test()` clean.
 - [x] T4: `usethis::use_news_md()`; `usethis::use_readme_rmd()` with a two-paragraph description of the Chromodoris plot; `devtools::build_readme()`.
-- [ ] T5: `usethis::use_github_action("check-standard", badge = FALSE)` and `("test-coverage", badge = FALSE)`; `usethis::use_pkgdown()`; confirm `.Rbuildignore` entries.
+- [x] T5: `usethis::use_github_action("check-standard", badge = FALSE)` and `("test-coverage", badge = FALSE)`; `usethis::use_pkgdown()`; confirm `.Rbuildignore` entries.
 - [ ] T6: `devtools::check()`; record each NOTE and its justification.
 
 ## Work log
@@ -61,6 +61,7 @@ Vignettes → candidate row after M002.
 - 2026-09-15: T2 done. `R/chromodoris-package.R` documents the package; `document()` writes NAMESPACE with import(ggplot2), importFrom(cli, cli_abort), importFrom(rlang, .data) and man/chromodoris-package.Rd.
 - 2026-09-15: T3 done. testthat 3e set up; tests/testthat/test-package.R checks the namespace loads with the three declared imports. `devtools::test()`: FAIL 0, WARN 0, SKIP 0, PASS 4.
 - 2026-09-15: T4 done. NEWS.md dev heading with one skeleton line (the usethis "Initial CRAN submission" line replaced; the package is GitHub-only). README.Rmd: two paragraphs on the plot plus a pak install line; knitted twice, `git diff --exit-code README.md` returned 0. usethis also installed a local `.git/hooks/pre-commit` that refuses commits when README.Rmd is newer than README.md.
+- 2026-09-15: T5 done. usethis 3.2.1 wrote .github/workflows/R-CMD-check.yaml and test-coverage.yaml from r-lib/actions v2 examples, and _pkgdown.yml (url left as ~ until a site exists). .Rbuildignore now holds ^cairn$, ^LICENSE\.md$, ^README\.Rmd$, ^\.github$, ^_pkgdown\.yml$, ^docs$, ^pkgdown$; .gitignore gained docs.
 
 ## Decisions
 
