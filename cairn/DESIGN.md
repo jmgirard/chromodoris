@@ -16,10 +16,15 @@ summary that reads at a glance.
   plot with opinionated scales and theme. Users can drop to the stat.
 - **What earns a place.** Every capability must serve the Chromodoris plot.
   General time-series tools and sibling plot types live elsewhere.
+- **Primary case (2026-09-15).** Multiple raters continuously rating the
+  same video clips, so every series shares one clip timeline. Ragged ends
+  and gaps are not the author's concern.
 - **Niche beside ggdist.** ggdist's `stat_lineribbon` draws nested bands
-  already. chromodoris earns its place through defaults for dense time
-  series: a fixed band set, a sequential fill scale, and alignment of
-  ragged, unaligned timestamps onto a common grid.
+  already (verified 2026-09-15 with a simulated example). chromodoris earns
+  its place by (1) producing the plot with little user-facing code,
+  (2) good defaults that stay customizable (band set, fill scale, legend
+  labels and order, axis formatting), and (3) an optional layer for users
+  who do face unaligned timestamps, ragged ends, or bound clipping.
 - **Distribution.** GitHub-only for now (2026-09-15). CRAN is not ruled out.
 - **Stability.** Free to break until 1.0; NEWS.md records every break.
 
@@ -36,7 +41,8 @@ _Planned, not built:_
 ## Conventions
 
 - **Input contract.** Long data with columns for series id, time, and value.
-  Any timestamps; the package aligns them.
+  Shared timestamps are the expected case; alignment of unshared timestamps
+  is optional, never required.
 - **Numeric work is oracle-verified.** Band edges and the center line are
   tested against an independent reference (base `quantile()`, ggdist) at
   the ≥2-types bar (D-024/D-025 doctrine). Supersedes the init-time
