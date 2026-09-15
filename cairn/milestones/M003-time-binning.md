@@ -1,13 +1,13 @@
 # M003: Time binning
 
-- **Status:** planned
+- **Status:** in-progress
 - **Priority:** high
 - **Depends on:** —
 - **Driving RR:** —
 - **Principles touched:** —
 - **Resolves:** —
 - **Surface tier:** user-facing — exports `bin_series()` and a `bin` argument on both plot functions
-- **Branch/PR:** —
+- **Branch/PR:** m003-time-binning
 
 ## Goal
 
