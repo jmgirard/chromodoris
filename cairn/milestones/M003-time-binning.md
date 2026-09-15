@@ -39,7 +39,7 @@ Let users bin every series onto a common time grid of a stated width before the 
 
 ## Tasks
 
-- [ ] T1: Tests first in `tests/testthat/test-bin_series.R` (oracle header naming the hand-computed and independent-implementation oracles; AC1 probes; AC4 width probes). Implement `R/bin_series.R` with `bin_series()` and `check_bin()` reused by the plot functions; export.
+- [x] T1: Tests first in `tests/testthat/test-bin_series.R` (oracle header naming the hand-computed and independent-implementation oracles; AC1 probes; AC4 width probes). Implement `R/bin_series.R` with `bin_series()` and `check_bin()` reused by the plot functions; export.
 - [ ] T2: Record the AC3 fixture from 48e2e88 first. In `R/stat-chromodoris.R` add `bin = NULL` to `stat_chromodoris()` and the params; validate in `setup_params` (lesson: ggplot2 wraps a Stat's `cli_abort`, `expect_error(class =)` still sees it); in `compute_panel` bin per `group` via the AC1 rule before the split-by-x path, aborting on the no-group sentinel; AC2, AC3, AC4 stat tests on line layers (lesson: ribbons overwrite `y`).
 - [ ] T3: In `R/chromodoris.R` add `bin = NULL`, validate at call time, pass to both layers; AC2 wrapper equality and AC4 call-time tests in `test-chromodoris.R`.
 - [ ] T4: Docs: roxygen text and examples per AC5, README example at a stated width then `devtools::build_readme()` (lesson: the pre-commit hook refuses stale README.md), NEWS entry, `_pkgdown.yml` row, DESIGN.md Function Families and Architecture updated for the built binning method; `document()`, `test()`, `check()` per AC6.
@@ -53,6 +53,8 @@ Let users bin every series onto a common time grid of a stated width before the 
 - 2026-09-15: plan gate chose bin midpoints for binned rows over bin starts because the ribbon then spans the interval it summarises; the user asked for edges visible on the axis, which default breaks give whenever the width divides the break spacing; falsified by a README figure whose breaks fall inside bins.
 - 2026-09-15: plan gate chose width in time units over a rate in Hz because the package cannot check the time unit; falsified by users repeatedly converting Hz by hand.
 - 2026-09-15: absorbed the ROADMAP candidate row "Alignment of unshared timestamps onto a grid (binning/interpolation), optional layer"; its interpolation half stays as a narrowed candidate row.
+
+- 2026-09-15: T1 done: `bin_series()`, `bin_core()`, `check_bin()` in R/bin_series.R; tests against the hand-computed and tapply() oracles pass. AC3 fixture recorded from the R/ tree at 48e2e88 (verified equal by `git diff --quiet 48e2e88 -- R/`) into tests/testthat/fixtures/stat-default-48e2e88.rds.
 
 ## Decisions
 
