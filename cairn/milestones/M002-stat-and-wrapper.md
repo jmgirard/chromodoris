@@ -26,11 +26,11 @@ Suggests as a test oracle only. Vignette → candidate row.
 
 ## Acceptance criteria
 
-- [ ] AC1: `stat_chromodoris()` with aesthetics x = time, y = value, group = rater id yields, via `layer_data()`, one row per (x, level) with `ymin`, `ymax`, and `center`; for every unique x in the simulated dataset (>= 20 raters, >= 50 time points, committed generator in `data-raw/` or a seeded helper in tests) `ymin`/`ymax` equal `stats::quantile(values_at_x, probs, type = t)` for probs (.05,.95), (.15,.85), (.25,.75) and t in c(7, 8) via a `type` argument, `center` equals `mean(values_at_x)` by default and `stats::median(values_at_x)` with `center = "median"`; a second test compares the type-7 result to `ggdist::mean_qi()` at `.width = c(.5, .7, .9)`.
-- [ ] AC2: `chromodoris(data, id, time, value)` returns a ggplot object whose layers are one ribbon layer built on `stat_chromodoris()` and one line layer, with a discrete viridis fill scale whose legend reads `90%`, `70%`, `50%` top to bottom; a `vdiffr::expect_doppelganger()` snapshot on the simulated dataset is committed.
-- [ ] AC3: `.width` (default `c(.5, .7, .9)`), `center = c("mean", "median")`, and `type` are arguments on both functions; `chromodoris()` raises a `cli::cli_abort()` condition of class `chromodoris_error_input` when `id`, `time`, or `value` is not a column of `data` or `time`/`value` is not numeric, tested with `expect_error(class = )`.
-- [ ] AC4: `devtools::document()` produces no diff, `devtools::test()` passes, and `devtools::check()` reports 0 errors, 0 warnings, and no NOTE beyond those justified in M001.
-- [ ] AC5: Both exported functions have `_pkgdown.yml` reference rows, `pkgdown::check_pkgdown()` passes, roxygen examples run under `devtools::run_examples()`, and NEWS.md has an entry describing them.
+- [x] AC1: `stat_chromodoris()` with aesthetics x = time, y = value, group = rater id yields, via `layer_data()`, one row per (x, level) with `ymin`, `ymax`, and `center`; for every unique x in the simulated dataset (>= 20 raters, >= 50 time points, committed generator in `data-raw/` or a seeded helper in tests) `ymin`/`ymax` equal `stats::quantile(values_at_x, probs, type = t)` for probs (.05,.95), (.15,.85), (.25,.75) and t in c(7, 8) via a `type` argument, `center` equals `mean(values_at_x)` by default and `stats::median(values_at_x)` with `center = "median"`; a second test compares the type-7 result to `ggdist::mean_qi()` at `.width = c(.5, .7, .9)`.
+- [x] AC2: `chromodoris(data, id, time, value)` returns a ggplot object whose layers are one ribbon layer built on `stat_chromodoris()` and one line layer, with a discrete viridis fill scale whose legend reads `90%`, `70%`, `50%` top to bottom; a `vdiffr::expect_doppelganger()` snapshot on the simulated dataset is committed.
+- [x] AC3: `.width` (default `c(.5, .7, .9)`), `center = c("mean", "median")`, and `type` are arguments on both functions; `chromodoris()` raises a `cli::cli_abort()` condition of class `chromodoris_error_input` when `id`, `time`, or `value` is not a column of `data` or `time`/`value` is not numeric, tested with `expect_error(class = )`.
+- [x] AC4: `devtools::document()` produces no diff, `devtools::test()` passes, and `devtools::check()` reports 0 errors, 0 warnings, and no NOTE beyond those justified in M001.
+- [x] AC5: Both exported functions have `_pkgdown.yml` reference rows, `pkgdown::check_pkgdown()` passes, roxygen examples run under `devtools::run_examples()`, and NEWS.md has an entry describing them.
 
 ## Coverage
 
@@ -71,3 +71,23 @@ Suggests as a test oracle only. Vignette → candidate row.
 ## Decisions
 
 ## Review
+
+Fresh evidence gathered 2026-09-15 on branch m002-stat-and-wrapper at 98c63ef. Main did not move after the branch was cut.
+
+- AC1: verified. test-stat_chromodoris.R runs on sim_raters(), a seeded helper with 24 raters and 60 time points and a provenance header. The stat returns one row per (x, level) with ymin, ymax, and center, and y equals center on a line layer. At every x the edges equal stats::quantile at probs .05/.95, .15/.85, and .25/.75 for type 7 and type 8. The center equals the mean by default and the median with center = "median". A separate test matches ggdist::mean_qi() at .width c(.5, .7, .9). devtools::test() gave 1369 pass, 0 fail, 0 skip.
+- AC2: verified. test-chromodoris.R shows a ggplot object with two layers, a ribbon on StatChromodoris and then a line on StatChromodoris. The fill scale is ScaleDiscrete with breaks and labels 90%, 70%, 50% in that order, and its colors equal scale_fill_viridis_d()$palette(3). The snapshot tests/testthat/_snaps/snapshot/chromodoris-default.svg is tracked and the vdiffr test passes.
+- AC3: verified. test-arguments.R shows that both functions share the formals .width (c(.5, .7, .9)), center (mean, median), and type (7), and that each reaches the computation from both functions. test-chromodoris.R fires each missing-column and non-numeric branch with expect_error(class = "chromodoris_error_input").
+- AC4: verified. devtools::document() left the tree clean. devtools::test() gave 1369 passes. devtools::check() gave 0 errors, 0 warnings, and 1 NOTE, the NEWS.md NOTE that M001 justified.
+- AC5: verified. _pkgdown.yml lists chromodoris and stat_chromodoris under Plotting. pkgdown::check_pkgdown() found no problems. devtools::run_examples() ran both examples without error. NEWS.md has entries for both functions. README.md is in sync with README.Rmd because build_readme() produced no diff.
+- Driving RR: none, so there are no projection-vs-outcome pairs.
+- Consistency gate: cairn_validate.py passed every check after the evidence and ticks landed. No DESIGN principle changed, so cairn_impact.py was skipped. Toolchain checks from the r-package profile: document() no diff, generated files untouched by hand, README in sync, check_pkgdown() clean, NEWS entries present, check() clean with the one justified NOTE.
+- Independent review, three lenses. The blame-history lens and the prior-review lens reported no findings and no prior-review evidence on the touched files (no GitHub review threads exist). The diff-bug lens reported nine findings, ranked by that reviewer:
+  1. Two .width values that round to the same percent give duplicated factor levels and the layer fails with an unrelated message (R/stat-chromodoris.R band_labels). Disposition: pending gate.
+  2. type is not validated at call time, so type = 99 yields an empty plot with warnings instead of a chromodoris_error_input condition (R/chromodoris.R, R/stat-chromodoris.R). Disposition: pending gate.
+  3. A time point where every value is missing emits no row, so the ribbon interpolates across the gap. Disposition: pending gate.
+  4. One series per time point draws bands of zero height with no signal. Disposition: pending gate.
+  5. StatChromodoris declares no dropped_aes, so extra aesthetics such as colour vanish silently. Disposition: pending gate.
+  6. summarise_bands() returns NA on an all-missing vector, unreachable from the layer. Disposition: pending gate.
+  7. The roxygen says center is also returned as y. On the default ribbon layer, y equals ymin. Disposition: pending gate.
+  8. center is unvalidated when StatChromodoris is used through a bare layer() call. Disposition: pending gate.
+  9. Duplicate (id, time) rows are pooled without notice. Disposition: pending gate.
