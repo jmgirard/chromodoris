@@ -50,7 +50,8 @@ forward.
 
 A grid point outside a series' observed time range yields no row for
 that series, so nothing is extrapolated. A grid point computed from a
-missing value also yields no row, so gaps in a series stay gaps.
+missing value also yields no row, so gaps in a series stay gaps. An
+infinite time or value is an error.
 
 \code{\link[=stat_chromodoris]{stat_chromodoris()}} and \code{\link[=chromodoris]{chromodoris()}} apply the same rule through
 their \code{grid} and \code{interpolate} arguments.

@@ -53,9 +53,10 @@
 #'   units. Each series is first evaluated at these times, exactly as
 #'   [interpolate_series()] does, and the bands are computed at each grid
 #'   point. A grid point outside a series' observed range, or computed from
-#'   a missing `y`, gives that series no value there, so gaps stay gaps.
-#'   Rows with a missing or non-finite `x` are dropped. `bin` and `grid`
-#'   cannot both be set.
+#'   a missing or non-finite `y`, gives that series no value there, so gaps
+#'   stay gaps. Rows with a missing or non-finite `x` are dropped. A `grid`
+#'   with no point inside the range of `x` is an error, and `bin` and
+#'   `grid` cannot both be set.
 #' @param interpolate How `grid` evaluates each series: `"linear"`
 #'   (default) or `"constant"` (the last value carried forward). Ignored
 #'   when `grid` is `NULL`.
@@ -118,6 +119,20 @@ StatChromodoris <- ggproto(
     check_bin(params$bin, allow_null = TRUE, arg = "bin")
     check_grid(params$grid, allow_null = TRUE)
     check_bin_grid(params$bin, params$grid)
+    if (!is.null(params$grid)) {
+      if (!is.null(params$interpolate) &&
+          !identical(params$interpolate, "linear") &&
+          !identical(params$interpolate, "constant")) {
+        cli_abort("{.arg interpolate} must be {.val linear} or {.val constant}.",
+                  class = "chromodoris_error_input")
+      }
+      x <- data$x[is.finite(data$x)]
+      if (length(x) > 0 &&
+          !any(params$grid >= min(x) & params$grid <= max(x))) {
+        cli_abort("{.arg grid} has no point inside the range of {.field x}.",
+                  class = "chromodoris_error_input")
+      }
+    }
     arg <- if (!is.null(params$bin)) "bin" else if (!is.null(params$grid)) "grid"
     if (!is.null(arg) && all(data$group == -1)) {
       cli_abort(c(

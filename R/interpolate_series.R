@@ -14,7 +14,8 @@
 #'
 #' A grid point outside a series' observed time range yields no row for
 #' that series, so nothing is extrapolated. A grid point computed from a
-#' missing value also yields no row, so gaps in a series stay gaps.
+#' missing value also yields no row, so gaps in a series stay gaps. An
+#' infinite time or value is an error.
 #'
 #' [stat_chromodoris()] and [chromodoris()] apply the same rule through
 #' their `grid` and `interpolate` arguments.
@@ -44,6 +45,12 @@ interpolate_series <- function(data, id, time, value, grid,
   value <- rlang::as_name(rlang::ensym(value))
   check_input(data, id, time, value)
   check_grid(grid)
+  for (col in c(time, value)) {
+    if (any(is.infinite(data[[col]]))) {
+      cli_abort("Column {.val {col}} must not hold infinite values.",
+                class = "chromodoris_error_input")
+    }
+  }
   out <- interp_core(data[[id]], data[[time]], data[[value]], grid, method)
   names(out) <- c(id, time, value)
   out

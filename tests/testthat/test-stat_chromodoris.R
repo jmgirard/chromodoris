@@ -270,6 +270,17 @@ test_that("bin and grid together, or grid without groups, are errors", {
   expect_error(ggplot_build(p), "grid")
 })
 
+test_that("a grid outside the data, or an unknown interpolate, is an error", {
+  p <- ggplot(sim, aes(time, value, group = id)) +
+    stat_chromodoris(grid = 100:110)
+  expect_error(ggplot_build(p), class = "chromodoris_error_input")
+  expect_error(ggplot_build(chromodoris(sim, id, time, value, grid = -5:-1)),
+               class = "chromodoris_error_input")
+  p <- ggplot(sim, aes(time, value, group = id)) +
+    geom_ribbon(stat = "chromodoris", grid = 0:30, interpolate = "cubic")
+  expect_error(ggplot_build(p), class = "chromodoris_error_input")
+})
+
 test_that("grid with a group coarser than the series warns", {
   p <- ggplot(sim, aes(time, value, group = 1)) + stat_chromodoris(grid = 0:30)
   expect_warning(ggplot_build(p), class = "chromodoris_warning_input")

@@ -14,8 +14,10 @@
   `"linear"` or `"constant"` values as `method`) that apply the same rule to
   each series before the bands are computed; with `grid` set, the stat needs
   `group` mapped to the series id, and missing values in `y` mark gaps
-  instead of being removed with a warning. Setting both `bin` and `grid`, or
-  an invalid `grid`, signals `chromodoris_error_input`.
+  instead of being removed with a warning. Setting both `bin` and `grid`, an
+  invalid `grid`, a `grid` with no point inside the range of `x` in the plot
+  functions, or an infinite time or value in `interpolate_series()` signals
+  `chromodoris_error_input`.
 * New vignette, `vignette("chromodoris")`, shows how to plot continuous
   ratings from many raters: binning, faceting clips, choosing `.width` and
   `center`, building from `stat_chromodoris()`, and what the bands miss.

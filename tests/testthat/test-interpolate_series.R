@@ -99,6 +99,14 @@ test_that("invalid grid signals chromodoris_error_input", {
   }
 })
 
+test_that("an infinite time or value is an error", {
+  for (d in list(data.frame(id = 1, time = c(0, 1, Inf), value = 1:3),
+                 data.frame(id = 1, time = 0:2, value = c(1, -Inf, 3)))) {
+    expect_error(interpolate_series(d, id, time, value, grid = 0:5),
+                 class = "chromodoris_error_input")
+  }
+})
+
 test_that("an unknown method is an error", {
   d <- data.frame(id = "a", time = 0, value = 1)
   expect_error(interpolate_series(d, id, time, value, grid = 0,
