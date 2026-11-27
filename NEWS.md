@@ -1,5 +1,8 @@
 # chromodoris (development version)
 
+* New vignette, `vignette("chromodoris")`, shows how to plot continuous
+  ratings from many raters: binning, faceting clips, choosing `.width` and
+  `center`, building from `stat_chromodoris()`, and what the bands miss.
 * With `bin` set, `stat_chromodoris()` warns (`chromodoris_warning_input`)
   when a group has several rows at one raw `x` in a panel, as when series
   sampled at the same times share a `group` (a constant, or a condition) or a
