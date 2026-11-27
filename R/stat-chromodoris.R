@@ -7,9 +7,9 @@
 #' [chromodoris()] wrapper, which does this for you.
 #'
 #' @section Aesthetics:
-#' `stat_chromodoris()` requires `x` (time) and `y` (value). Without `bin`,
-#' mapping `group` to a series id is allowed but not needed, because every
-#' series in a panel is pooled at each `x`. With `bin` or `grid` set,
+#' `stat_chromodoris()` requires `x` (time) and `y` (value). Without `bin`
+#' or `grid`, mapping `group` to a series id is allowed but not needed,
+#' because every series in a panel is pooled at each `x`. With `bin` or `grid` set,
 #' `group` must identify the series, because each series is binned or
 #' interpolated on its own before the pooling; a layer with no groups (no
 #' `group` mapping and no discrete aesthetic such as `colour`) then signals
@@ -53,13 +53,15 @@
 #'   units. Each series is first evaluated at these times, exactly as
 #'   [interpolate_series()] does, and the bands are computed at each grid
 #'   point. A grid point outside a series' observed range, or computed from
-#'   a missing or non-finite `y`, gives that series no value there, so gaps
-#'   stay gaps. Rows with a missing or non-finite `x` are dropped. A `grid`
+#'   a missing or non-finite `y`, gives that series no value there. A grid
+#'   point where no series has a value gets no bands, so the ribbons and the
+#'   center line are drawn straight across it. Rows with a missing or
+#'   non-finite `x` are dropped. A `grid`
 #'   with no point inside the range of `x` is an error, and `bin` and
 #'   `grid` cannot both be set.
 #' @param interpolate How `grid` evaluates each series: `"linear"`
-#'   (default) or `"constant"` (the last value carried forward). Ignored
-#'   when `grid` is `NULL`.
+#'   (default) or `"constant"` (the last value carried forward). It is
+#'   checked even when `grid` is `NULL`, where it has no effect.
 #' @return A ggplot2 layer.
 #' @examples
 #' # 20 raters sampled 10 times per second for 40 seconds (401 points each).
@@ -136,7 +138,8 @@ StatChromodoris <- ggproto(
     arg <- if (!is.null(params$bin)) "bin" else if (!is.null(params$grid)) "grid"
     if (!is.null(arg) && all(data$group == -1)) {
       cli_abort(c(
-        "{.arg {arg}} needs {.field group} mapped to the series id.",
+        "{.arg {arg}} needs {.field group} to identify each series.",
+        i = "Map {.field group} to the series id.",
         i = "Every series is aligned on its own before the bands are computed."
       ), class = "chromodoris_error_input")
     }
