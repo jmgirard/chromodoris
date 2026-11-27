@@ -25,12 +25,16 @@
 #' chromodoris(d, id, time, value, bin = 0.5)
 #' chromodoris(d, "id", "time", "value", .width = c(0.5, 0.95),
 #'             center = "median", bin = 0.5)
+#' # Evaluate each rater on a 1-second grid by linear interpolation.
+#' chromodoris(d, id, time, value, grid = 0:40)
 #' @export
 chromodoris <- function(data, id, time, value,
                         .width = c(0.5, 0.7, 0.9),
                         center = c("mean", "median"), type = 7,
-                        bin = NULL) {
+                        bin = NULL, grid = NULL,
+                        interpolate = c("linear", "constant")) {
   center <- match.arg(center)
+  interpolate <- match.arg(interpolate)
   id <- rlang::as_name(rlang::ensym(id))
   time <- rlang::as_name(rlang::ensym(time))
   value <- rlang::as_name(rlang::ensym(value))
@@ -38,14 +42,17 @@ chromodoris <- function(data, id, time, value,
   check_width(.width)
   check_type(type)
   check_bin(bin, allow_null = TRUE, arg = "bin")
+  check_grid(grid, allow_null = TRUE)
+  check_bin_grid(bin, grid)
 
   ggplot(data, aes(x = .data[[time]], y = .data[[value]],
                    group = .data[[id]])) +
     stat_chromodoris(aes(fill = after_stat(level)),
                      .width = .width, center = center, type = type,
-                     bin = bin) +
+                     bin = bin, grid = grid, interpolate = interpolate) +
     stat_chromodoris(geom = "line", .width = max(.width), center = center,
-                     type = type, bin = bin, show.legend = FALSE) +
+                     type = type, bin = bin, grid = grid,
+                     interpolate = interpolate, show.legend = FALSE) +
     scale_fill_viridis_d(name = "Band") +
     labs(x = time, y = value) +
     theme_minimal()

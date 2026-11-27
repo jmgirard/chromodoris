@@ -12,7 +12,9 @@ chromodoris(
   .width = c(0.5, 0.7, 0.9),
   center = c("mean", "median"),
   type = 7,
-  bin = NULL
+  bin = NULL,
+  grid = NULL,
+  interpolate = c("linear", "constant")
 )
 }
 \arguments{
@@ -36,6 +38,19 @@ does: bin \code{k} covers \verb{[k * bin, (k + 1) * bin)}, and the bands are
 computed at the bin midpoints \code{(k + 0.5) * bin}. The bin index is
 computed in floating point, so a boundary time can fall in the lower
 bin when \code{x / bin} is not exactly an integer.}
+
+\item{grid}{\code{NULL} (default), or a numeric vector of finite times in \code{x}
+units. Each series is first evaluated at these times, exactly as
+\code{\link[=interpolate_series]{interpolate_series()}} does, and the bands are computed at each grid
+point. A grid point outside a series' observed range, or computed from
+a missing or non-finite \code{y}, gives that series no value there, so gaps
+stay gaps. Rows with a missing or non-finite \code{x} are dropped. A \code{grid}
+with no point inside the range of \code{x} is an error, and \code{bin} and
+\code{grid} cannot both be set.}
+
+\item{interpolate}{How \code{grid} evaluates each series: \code{"linear"}
+(default) or \code{"constant"} (the last value carried forward). Ignored
+when \code{grid} is \code{NULL}.}
 }
 \value{
 A ggplot object with two layers: a ribbon layer built on
@@ -60,4 +75,6 @@ chromodoris(d, id, time, value)
 chromodoris(d, id, time, value, bin = 0.5)
 chromodoris(d, "id", "time", "value", .width = c(0.5, 0.95),
             center = "median", bin = 0.5)
+# Evaluate each rater on a 1-second grid by linear interpolation.
+chromodoris(d, id, time, value, grid = 0:40)
 }

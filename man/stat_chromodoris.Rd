@@ -15,6 +15,8 @@ stat_chromodoris(
   center = c("mean", "median"),
   type = 7,
   bin = NULL,
+  grid = NULL,
+  interpolate = c("linear", "constant"),
   na.rm = FALSE,
   show.legend = NA,
   inherit.aes = TRUE
@@ -110,8 +112,23 @@ computed at the bin midpoints \code{(k + 0.5) * bin}. The bin index is
 computed in floating point, so a boundary time can fall in the lower
 bin when \code{x / bin} is not exactly an integer.}
 
+\item{grid}{\code{NULL} (default), or a numeric vector of finite times in \code{x}
+units. Each series is first evaluated at these times, exactly as
+\code{\link[=interpolate_series]{interpolate_series()}} does, and the bands are computed at each grid
+point. A grid point outside a series' observed range, or computed from
+a missing or non-finite \code{y}, gives that series no value there, so gaps
+stay gaps. Rows with a missing or non-finite \code{x} are dropped. A \code{grid}
+with no point inside the range of \code{x} is an error, and \code{bin} and
+\code{grid} cannot both be set.}
+
+\item{interpolate}{How \code{grid} evaluates each series: \code{"linear"}
+(default) or \code{"constant"} (the last value carried forward). Ignored
+when \code{grid} is \code{NULL}.}
+
 \item{na.rm}{If \code{FALSE} (default), missing values are removed with a
-warning. If \code{TRUE}, they are removed silently.}
+warning. If \code{TRUE}, they are removed silently. With \code{grid} set,
+missing and non-finite values are used as \code{grid} describes, without a
+warning.}
 
 \item{show.legend}{logical. Should this layer be included in the legends?
 \code{NA}, the default, includes if any aesthetics are mapped.
@@ -140,11 +157,12 @@ upper edge plus one center value. The default geom is a ribbon. Map
 
 \code{stat_chromodoris()} requires \code{x} (time) and \code{y} (value). Without \code{bin},
 mapping \code{group} to a series id is allowed but not needed, because every
-series in a panel is pooled at each \code{x}. With \code{bin} set, \code{group} must
-identify the series, because each series is binned on its own before
-the pooling; a layer with no groups (no \code{group} mapping and no discrete
-aesthetic such as \code{colour}) then signals an error when the plot is built.
-A group with more than one row at the same \code{x} in a panel signals a
+series in a panel is pooled at each \code{x}. With \code{bin} or \code{grid} set,
+\code{group} must identify the series, because each series is binned or
+interpolated on its own before the pooling; a layer with no groups (no
+\code{group} mapping and no discrete aesthetic such as \code{colour}) then signals
+an error when the plot is built. With \code{bin} or \code{grid} set, a group with
+more than one row at the same \code{x} in a panel signals a
 warning of class \code{chromodoris_warning_input}: this happens when \code{group}
 is a constant or a condition shared by several series sampled at the same
 times, or when a series has duplicate rows. Series in one group that share
@@ -185,4 +203,7 @@ ggplot(d, aes(time, value)) +
 ggplot(d, aes(time, value, group = id)) +
   stat_chromodoris(aes(fill = after_stat(level)), bin = 0.5) +
   stat_chromodoris(geom = "line", .width = 0.9, bin = 0.5)
+# Or evaluate each rater on a 1-second grid by linear interpolation.
+ggplot(d, aes(time, value, group = id)) +
+  stat_chromodoris(aes(fill = after_stat(level)), grid = 0:40)
 }
