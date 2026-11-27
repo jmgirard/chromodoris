@@ -23,9 +23,10 @@ where most raters are at a given moment or how far apart they are.
 
 A Chromodoris plot summarizes the series moment by moment instead. At each
 time point, it pools the values from every series and draws nested quantile
-bands around a center line. By default, the bands hold the inner 50%, 70%,
-and 90% of the values, and the center line is the mean (or the median, if
-you ask for it). The package has three functions. `chromodoris()` draws the
+bands with a center line. Each band runs between two quantiles of those
+values: by default the 50% band runs from the 0.25 to the 0.75 quantile, and
+the 70% and 90% bands are wider. The center line is the mean (or the median,
+if you ask for it). The package has three functions. `chromodoris()` draws the
 whole plot in one call, `stat_chromodoris()` is the stat behind it for use in
 your own ggplot2 code, and `bin_series()` averages each series within
 fixed-width time bins.
@@ -86,9 +87,10 @@ here, or as quoted strings.
 chromodoris(clip_a, rater, time, value)
 ```
 
-At every time point, the stat pools the 15 raters' values and draws bands
-holding the central 50%, 70%, and 90% of them. The legend labels each band.
-The black line is the mean of the 15 values at that time. `chromodoris()`
+At every time point, the stat pools the 15 raters' values and draws the
+50%, 70%, and 90% bands from their quantiles. The legend labels each band.
+The black line is the mean of the 15 values at that time. A mean pulled by
+one or two outlying raters can sit outside the 50% band. `chromodoris()`
 also adds a viridis fill scale named "Band" and `theme_minimal()`, and it
 returns a ggplot, so you can add your own layers, scales, themes, and facets
 to it.
@@ -96,8 +98,8 @@ to it.
 The band edges in this plot are jagged. With 15 raters, the 90% band spans
 the 0.05 and 0.95 quantiles (computed with R's default method, type 7 in
 `stats::quantile()`). So at each time point its upper edge lies between the
-two highest raters and its lower edge between the two lowest, and the edges
-move whenever those raters move, 10 times per second.
+two highest raters and its lower edge between the two lowest. The edges
+follow those raters, sampled 10 times per second.
 
 ## Binning
 
@@ -123,15 +125,15 @@ head(bin_series(clip_a, rater, time, value, width = 0.5))
 
 The times in the output are the bin midpoints: 0.25, 0.75, 1.25, and so on.
 
-Choosing a width is a tradeoff. Wider bins give smoother bands, but they hide
-any change shorter than a bin, so the width should be shorter than the
+Choosing a width is a tradeoff. Wider bins give smoother bands, but they
+flatten or hide any change shorter than a bin, so the width should be shorter than the
 changes you care about. The width is in the units of the time column, which
 here is seconds.
 
 Binning also matters when raters were not sampled at the same times. Without
-`bin`, the stat pools only the values that share an exact time value, so
-series sampled at different times need to be binned before they can be
-pooled.
+`bin`, the stat summarizes each distinct time value on its own, from only the
+raters that have a value at that time. Binning first puts every rater on the
+same bins, so the bands at each bin come from all of them.
 
 ## Several clips
 
@@ -148,13 +150,15 @@ Each panel's bands come only from that panel's rows. The same rater ids
 recur across clips, but each panel is binned and summarized on its own, so a
 rater's ratings of one clip never mix with their ratings of another.
 
-In clip C, the bands widen around 30 s, where the true signal shifts. The
-raters react to the shift at different lags, so the width there is
-disagreement about when the change happened. The plot shows this directly.
+In clip C, the bands widen just after 30 s, where the true signal shifts.
+In this simulation the widening comes from the raters' different reaction
+lags: for up to 3 seconds, some raters have moved to the new level and others
+have not.
 
 ## Choosing bands and center
 
-`.width` takes any band widths between 0 and 1, and `center` is either
+`.width` takes band widths between 0 and 1 (no two may round to the same
+whole percent, since that percent labels the band), and `center` is either
 `"mean"` or `"median"`. Here are two bands, 50% and 95%, around the median.
 
 ```{r, fig.width = 7, fig.height = 4}
@@ -182,8 +186,9 @@ ggplot(clip_a, aes(time, value, group = rater)) +
   theme_classic()
 ```
 
-With `bin` set, the stat needs `group` mapped to the rater id, because each
-rater is binned on its own. Without a group, it signals an error.
+With `bin` set, the stat needs groups that identify the raters, because each
+rater is binned on its own; mapping `group` to the rater id does this. A
+layer with no groups signals an error.
 `chromodoris()` maps `group` for you.
 
 ## What the bands do not show
