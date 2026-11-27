@@ -1,27 +1,18 @@
-<!-- Appended to the repo's CLAUDE.md by /cairn-init. Keep the section body under ~25 lines. -->
-
 ## Project tracking (cairn)
 
-This repo uses the cairn plugin. **Before acting on any request, classify it
-and route** — the tracking rulebook only loads once a cairn skill fires, so
-starting work in plain conversation silently bypasses the work tiers and the
-git model. Classify first:
+This repo uses the cairn plugin. Work goes through its `/cairn` skill:
 
-- **Trivial** (no runtime surface — typo, comment, tracking edit): commit
-  directly to the default branch.
-- **User-visible bug**: invoke `/hotfix`.
-- **New work, a design decision, or more than one sitting**: invoke
-  `/milestone-plan` (then `/milestone-implement` → `/milestone-review`).
-- **Status, "what's next", or unsure which tier**: invoke `/milestone`.
-- **Never implement code on the default branch** outside a milestone/hotfix
-  branch; nothing reaches it without the user's explicit approval at the
-  review gate.
+- **Trivial** (no runtime surface: a typo, a comment, a ROADMAP row): commit
+  to the default branch.
+- **Anything else**: `/cairn start`, which plans the work on a branch and
+  takes it to review. `/cairn resume` picks work up, and `/cairn review`
+  ships it.
+- **Status or "what's next"**: `/cairn status`.
 
-Whenever the request is anything but trivial, invoke the skill *first* so the
-full rulebook (the plugin's `skills/shared/tracking-rules.md`) and its conduct
-load — do not reconstruct the rules here from memory. All project state lives under
-`cairn/` (**Architecture → DESIGN · Status → ROADMAP · Tasks → milestone
-files · Decisions → DECISIONS · Lessons → LESSONS · History → archive +
-git**); never record
-status or TODOs in this file. Claude's persistent memory never holds project
-state; `cairn/` files win any conflict.
+Never build on the default branch. Nothing reaches it without the user's
+approval at the merge question, or for a trivial edit their request.
+
+Candidates are in `cairn/ROADMAP.md`, and the toolchain commands are in
+`cairn/PROFILE.md`. Plans live outside the repo, in the home folder that
+`/cairn status` prints. `cairn/archive/` holds records from before cairn v3
+and is read by nothing. Never record status or TODOs in this file.
