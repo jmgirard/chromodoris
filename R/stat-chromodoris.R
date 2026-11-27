@@ -54,11 +54,11 @@
 #'   [interpolate_series()] does, and the bands are computed at each grid
 #'   point. A grid point outside a series' observed range, or computed from
 #'   a missing or non-finite `y`, gives that series no value there. A grid
-#'   point where no series has a value gets no bands, so the ribbons and the
-#'   center line are drawn straight across it. Rows with a missing or
-#'   non-finite `x` are dropped. A `grid`
-#'   with no point inside the range of `x` is an error, and `bin` and
-#'   `grid` cannot both be set.
+#'   point where no series has a value gets no bands; between two grid
+#'   points that have bands, the ribbons and the center line are drawn
+#'   straight across it. Rows with a missing or non-finite `x` are dropped.
+#'   A `grid` with no point inside the range of `x` is an error, and `bin`
+#'   and `grid` cannot both be set.
 #' @param interpolate How `grid` evaluates each series: `"linear"`
 #'   (default) or `"constant"` (the last value carried forward). It is
 #'   checked even when `grid` is `NULL`, where it has no effect.
