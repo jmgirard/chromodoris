@@ -1,5 +1,21 @@
 # chromodoris (development version)
 
+* New `interpolate_series()` evaluates each series at the times in `grid`, so
+  series sampled at different times share time points. `grid` is a numeric
+  vector of finite times; the function sorts it and drops duplicates, so any
+  order is fine. With `method = "linear"`, a grid point takes the value on
+  the straight line between the observations on either side of it; with
+  `"constant"`, it takes the last observation at or before it. Nothing is
+  extrapolated: a grid point outside a series' observed time range, or one
+  computed from a missing value, gives no row for that series, so gaps stay
+  gaps. Within a series, rows with a missing time are dropped and rows that
+  repeat a time are averaged first. `stat_chromodoris()` and `chromodoris()`
+  gain `grid` and `interpolate` arguments (`interpolate` takes the same
+  `"linear"` or `"constant"` values as `method`) that apply the same rule to
+  each series before the bands are computed; with `grid` set, the stat needs
+  `group` mapped to the series id, and missing values in `y` mark gaps
+  instead of being removed with a warning. Setting both `bin` and `grid`, or
+  an invalid `grid`, signals `chromodoris_error_input`.
 * New vignette, `vignette("chromodoris")`, shows how to plot continuous
   ratings from many raters: binning, faceting clips, choosing `.width` and
   `center`, building from `stat_chromodoris()`, and what the bands miss.

@@ -26,10 +26,11 @@ time point, it pools the values from every series and draws nested quantile
 bands with a center line. Each band runs between two quantiles of those
 values: by default the 50% band runs from the 0.25 to the 0.75 quantile, and
 the 70% and 90% bands are wider. The center line is the mean (or the median,
-if you ask for it). The package has three functions. `chromodoris()` draws the
+if you ask for it). The package has four functions. `chromodoris()` draws the
 whole plot in one call, `stat_chromodoris()` is the stat behind it for use in
-your own ggplot2 code, and `bin_series()` averages each series within
-fixed-width time bins.
+your own ggplot2 code, `bin_series()` averages each series within
+fixed-width time bins, and `interpolate_series()` evaluates each series at
+a common grid of times.
 
 ## Example data
 

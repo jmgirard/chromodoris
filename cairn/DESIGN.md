@@ -30,11 +30,13 @@ summary that reads at a glance.
 
 ## Function Families
 
-_Summary and Layer are built (M002); Alignment is partly built (M003):_
+_Summary and Layer are built (M002); Alignment is built (M003, interpolate-grid):_
 
 - **Alignment.** Put many series with different timestamps and lengths onto
-  a common time grid. Built: binning to a stated width (`bin_series()`,
-  `bin =` on the stat and wrapper; M003). Planned: interpolation.
+  a common time grid. Binning to a stated width (`bin_series()`, `bin =` on
+  the stat and wrapper; M003), and linear or constant interpolation onto a
+  stated grid (`interpolate_series()`, `grid =` and `interpolate =` on the
+  stat and wrapper). `bin` and `grid` are exclusive.
 - **Summary.** Per-grid-point quantile bands and a center line (mean or
   median).
 - **Layer.** A ggplot2 `Stat` that feeds `geom_ribbon`, plus the wrapper.
@@ -87,7 +89,11 @@ _None adopted yet._
 - `R/summarise_bands.R`: band edges and center for one numeric vector.
 - `R/bin_series.R`: `bin_series()` (exported), `bin_core()` (shared with
   the stat), `check_bin()`.
-- `R/stat-chromodoris.R`: `StatChromodoris` bins per `group` when `bin` is
+- `R/interpolate_series.R`: `interpolate_series()` (exported),
+  `interp_core()` (shared with the stat), `check_grid()`.
+- `R/stat-chromodoris.R`: `StatChromodoris` interpolates per panel and
+  `group` in `compute_layer()` when `grid` is set (before ggplot2 drops
+  missing values, so an NA stays a gap), bins per `group` when `bin` is
   set, then pools every series per `x` through `summarise_bands()`.
 - `R/chromodoris.R`: the wrapper, two stat layers, and the input checks.
 
