@@ -116,14 +116,16 @@ bin when \code{x / bin} is not exactly an integer.}
 units. Each series is first evaluated at these times, exactly as
 \code{\link[=interpolate_series]{interpolate_series()}} does, and the bands are computed at each grid
 point. A grid point outside a series' observed range, or computed from
-a missing or non-finite \code{y}, gives that series no value there, so gaps
-stay gaps. Rows with a missing or non-finite \code{x} are dropped. A \code{grid}
-with no point inside the range of \code{x} is an error, and \code{bin} and
-\code{grid} cannot both be set.}
+a missing or non-finite \code{y}, gives that series no value there. A grid
+point where no series has a value gets no bands; between two grid
+points that have bands, the ribbons and the center line are drawn
+straight across it. Rows with a missing or non-finite \code{x} are dropped.
+A \code{grid} with no point inside the range of \code{x} is an error, and \code{bin}
+and \code{grid} cannot both be set.}
 
 \item{interpolate}{How \code{grid} evaluates each series: \code{"linear"}
-(default) or \code{"constant"} (the last value carried forward). Ignored
-when \code{grid} is \code{NULL}.}
+(default) or \code{"constant"} (the last value carried forward). It is
+checked even when \code{grid} is \code{NULL}, where it has no effect.}
 
 \item{na.rm}{If \code{FALSE} (default), missing values are removed with a
 warning. If \code{TRUE}, they are removed silently. With \code{grid} set,
@@ -155,9 +157,9 @@ upper edge plus one center value. The default geom is a ribbon. Map
 }
 \section{Aesthetics}{
 
-\code{stat_chromodoris()} requires \code{x} (time) and \code{y} (value). Without \code{bin},
-mapping \code{group} to a series id is allowed but not needed, because every
-series in a panel is pooled at each \code{x}. With \code{bin} or \code{grid} set,
+\code{stat_chromodoris()} requires \code{x} (time) and \code{y} (value). Without \code{bin}
+or \code{grid}, mapping \code{group} to a series id is allowed but not needed,
+because every series in a panel is pooled at each \code{x}. With \code{bin} or \code{grid} set,
 \code{group} must identify the series, because each series is binned or
 interpolated on its own before the pooling; a layer with no groups (no
 \code{group} mapping and no discrete aesthetic such as \code{colour}) then signals

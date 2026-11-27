@@ -93,7 +93,7 @@ test_that("interpolation matches stats::approx() inside each series' range", {
 test_that("invalid grid signals chromodoris_error_input", {
   d <- data.frame(id = "a", time = 0, value = 1)
   for (g in list(NA_real_, c(0, NA), c(0, Inf), numeric(0), "1", list(1),
-                 NULL)) {
+                 NULL, matrix(c(0, 1)))) {
     expect_error(interpolate_series(d, id, time, value, grid = g),
                  class = "chromodoris_error_input")
   }

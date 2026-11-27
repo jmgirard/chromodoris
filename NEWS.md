@@ -7,16 +7,21 @@
   the straight line between the observations on either side of it; with
   `"constant"`, it takes the last observation at or before it. Nothing is
   extrapolated: a grid point outside a series' observed time range, or one
-  computed from a missing value, gives no row for that series, so gaps stay
-  gaps. Within a series, rows with a missing time are dropped and rows that
-  repeat a time are averaged first. `stat_chromodoris()` and `chromodoris()`
-  gain `grid` and `interpolate` arguments (`interpolate` takes the same
-  `"linear"` or `"constant"` values as `method`) that apply the same rule to
-  each series before the bands are computed; with `grid` set, the stat needs
-  `group` mapped to the series id, and missing values in `y` mark gaps
-  instead of being removed with a warning. Setting both `bin` and `grid`, an
-  invalid `grid`, a `grid` with no point inside the range of `x` in the plot
-  functions, or an infinite time or value in `interpolate_series()` signals
+  computed from a missing value, gives no row for that series. Within a
+  series, rows with a missing time are dropped and rows that repeat a time
+  are averaged first. `stat_chromodoris()` and `chromodoris()` gain `grid`
+  and `interpolate` arguments (`interpolate` takes the same `"linear"` or
+  `"constant"` values as `method`) that apply the same rule to each series
+  before the bands are computed. With `grid` set, the stat needs a group for
+  each series (map `group` to the series id, or map a discrete aesthetic such
+  as `colour` to it). Rows with a missing `x` are dropped, and a missing `y`
+  leaves that series out of the bands at the grid points it affects; neither
+  gives ggplot2's warning about removed rows. A grid point where no series
+  has a value gets no bands; between two grid points that have bands, the
+  ribbons and center line are drawn straight across it. Setting both
+  `bin` and `grid`, an invalid `grid`, a `grid` with no point inside the
+  range of `x` in the plot functions, a layer with `grid` set but no groups,
+  or an infinite time or value in `interpolate_series()` signals
   `chromodoris_error_input`.
 * New vignette, `vignette("chromodoris")`, shows how to plot continuous
   ratings from many raters: binning, faceting clips, choosing `.width` and

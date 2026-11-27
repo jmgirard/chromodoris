@@ -43,14 +43,16 @@ bin when \code{x / bin} is not exactly an integer.}
 units. Each series is first evaluated at these times, exactly as
 \code{\link[=interpolate_series]{interpolate_series()}} does, and the bands are computed at each grid
 point. A grid point outside a series' observed range, or computed from
-a missing or non-finite \code{y}, gives that series no value there, so gaps
-stay gaps. Rows with a missing or non-finite \code{x} are dropped. A \code{grid}
-with no point inside the range of \code{x} is an error, and \code{bin} and
-\code{grid} cannot both be set.}
+a missing or non-finite \code{y}, gives that series no value there. A grid
+point where no series has a value gets no bands; between two grid
+points that have bands, the ribbons and the center line are drawn
+straight across it. Rows with a missing or non-finite \code{x} are dropped.
+A \code{grid} with no point inside the range of \code{x} is an error, and \code{bin}
+and \code{grid} cannot both be set.}
 
 \item{interpolate}{How \code{grid} evaluates each series: \code{"linear"}
-(default) or \code{"constant"} (the last value carried forward). Ignored
-when \code{grid} is \code{NULL}.}
+(default) or \code{"constant"} (the last value carried forward). It is
+checked even when \code{grid} is \code{NULL}, where it has no effect.}
 }
 \value{
 A ggplot object with two layers: a ribbon layer built on
