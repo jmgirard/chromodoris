@@ -58,7 +58,10 @@
 #'   points that have bands, the ribbons and the center line are drawn
 #'   straight across it. Rows with a missing or non-finite `x` are dropped.
 #'   A `grid` with no point inside the range of `x` is an error, and `bin`
-#'   and `grid` cannot both be set.
+#'   and `grid` cannot both be set. ggplot2 transforms `x` by its position
+#'   scale before the stat sees it, but `grid` stays in the units given, so
+#'   `grid` is not supported with a transformed x scale such as
+#'   [ggplot2::scale_x_log10()] or [ggplot2::scale_x_reverse()].
 #' @param interpolate How `grid` evaluates each series: `"linear"`
 #'   (default) or `"constant"` (the last value carried forward). It is
 #'   checked even when `grid` is `NULL`, where it has no effect.

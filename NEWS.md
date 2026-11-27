@@ -18,7 +18,9 @@
   leaves that series out of the bands at the grid points it affects; neither
   gives ggplot2's warning about removed rows. A grid point where no series
   has a value gets no bands; between two grid points that have bands, the
-  ribbons and center line are drawn straight across it. Setting both
+  ribbons and center line are drawn straight across it. `grid` is not
+  transformed with `x`, so it is not supported with a transformed x scale
+  such as `scale_x_log10()` or `scale_x_reverse()`. Setting both
   `bin` and `grid`, an invalid `grid`, a `grid` with no point inside the
   range of `x` in the plot functions, a layer with `grid` set but no groups,
   or an infinite time or value in `interpolate_series()` signals
