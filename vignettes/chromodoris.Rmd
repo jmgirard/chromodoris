@@ -1,0 +1,208 @@
+---
+title: "Plotting ratings from many raters"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Plotting ratings from many raters}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Suppose several raters have each watched the same video clips and rated them
+continuously as the clips played. Each rater produces one time series per
+clip, and all of those series share the clip's timeline. The usual first plot
+overlays every series as a line. With 15 raters, this spaghetti plot is
+already hard to read: the lines cross each other, and it is hard to tell
+where most raters are at a given moment or how far apart they are.
+
+A Chromodoris plot summarizes the series moment by moment instead. At each
+time point, it pools the values from every series and draws nested quantile
+bands with a center line. Each band runs between two quantiles of those
+values: by default the 50% band runs from the 0.25 to the 0.75 quantile, and
+the 70% and 90% bands are wider. The center line is the mean (or the median,
+if you ask for it). The package has three functions. `chromodoris()` draws the
+whole plot in one call, `stat_chromodoris()` is the stat behind it for use in
+your own ggplot2 code, and `bin_series()` averages each series within
+fixed-width time bins.
+
+## Example data
+
+The examples below use simulated ratings. 15 raters each rate three
+60-second clips, labeled A, B, and C, at 10 samples per second. That gives
+601 time points per rater per clip. Each rater follows the clip's true
+signal, but with their own reaction lag (between 0 and 3 seconds), their own
+offset, and noise that drifts slowly over time. Clip C has an abrupt shift at
+30 seconds.
+
+```{r}
+library(chromodoris)
+library(ggplot2)
+set.seed(2)
+n_raters <- 15
+time <- seq(0, 60, by = 0.1)
+signal <- list(
+  A = function(t) sin(t / 8),
+  B = function(t) 0.8 * cos(t / 5) - 0.3,
+  C = function(t) ifelse(t < 30, -0.5, 0.7) + 0.2 * sin(t / 3)
+)
+ratings <- do.call(rbind, lapply(names(signal), function(clip) {
+  d <- expand.grid(time = time, rater = seq_len(n_raters))
+  d$clip <- clip
+  lag <- runif(n_raters, 0, 3)[d$rater]
+  offset <- rnorm(n_raters, sd = 0.3)[d$rater]
+  drift <- ave(rnorm(nrow(d), sd = 0.06), d$rater,
+               FUN = function(e) stats::filter(e, 0.985, method = "recursive"))
+  d$value <- signal[[clip]](d$time - lag) + offset + drift
+  d[c("clip", "rater", "time", "value")]
+}))
+head(ratings)
+```
+
+The data are in long form, with one row per clip, rater, and time point
+(27,045 rows in all) and columns for `clip`, `rater`, `time`, and `value`.
+All three functions take data in this form: a column that identifies each
+series, a numeric time column, and a numeric value column.
+
+## One clip
+
+Start with clip A. Here is the spaghetti plot, with one line per rater.
+
+```{r, fig.width = 7, fig.height = 4}
+clip_a <- ratings[ratings$clip == "A", ]
+ggplot(clip_a, aes(time, value, group = rater)) +
+  geom_line(alpha = 0.4)
+```
+
+And here is the Chromodoris plot of the same data. The three arguments after
+the data name the id, time, and value columns. They can be given bare, as
+here, or as quoted strings.
+
+```{r, fig.width = 7, fig.height = 4}
+chromodoris(clip_a, rater, time, value)
+```
+
+At every time point, the stat pools the 15 raters' values and draws the
+50%, 70%, and 90% bands from their quantiles. The legend labels each band.
+The black line is the mean of the 15 values at that time. A mean pulled by
+one or two outlying raters can sit outside the 50% band. `chromodoris()`
+also adds a viridis fill scale named "Band" and `theme_minimal()`, and it
+returns a ggplot, so you can add your own layers, scales, themes, and facets
+to it.
+
+The band edges in this plot are jagged. With 15 raters, the 90% band spans
+the 0.05 and 0.95 quantiles (computed with R's default method, type 7 in
+`stats::quantile()`). So at each time point its upper edge lies between the
+two highest raters and its lower edge between the two lowest. The edges
+follow those raters, sampled 10 times per second.
+
+## Binning
+
+The `bin` argument averages each rater's values within fixed-width time bins
+before the bands are computed. With `bin = 0.5`, each rater is averaged
+within 0.5-second bins, so each rater has 2 values per second instead of 10.
+
+```{r, fig.width = 7, fig.height = 4}
+chromodoris(clip_a, rater, time, value, bin = 0.5)
+```
+
+Bin `k` covers the times from `k * 0.5` up to but not including
+`(k + 1) * 0.5`, and the binned value sits at the bin's midpoint. Times from
+0 to 60 give 121 bins, and the last bin holds only the sample at 60 s.
+
+`bin_series()` applies the same rule to a data frame, so you can look at the
+binned data or use it elsewhere. It returns the id, time, and value columns
+under their original names, with one row per rater and non-empty bin.
+
+```{r}
+head(bin_series(clip_a, rater, time, value, width = 0.5))
+```
+
+The times in the output are the bin midpoints: 0.25, 0.75, 1.25, and so on.
+
+Choosing a width is a tradeoff. Wider bins give smoother bands, but they
+flatten or hide any change shorter than a bin, so the width should be shorter than the
+changes you care about. The width is in the units of the time column, which
+here is seconds.
+
+Binning also matters when raters were not sampled at the same times. Without
+`bin`, the stat summarizes each distinct time value on its own, from only the
+raters that have a value at that time. Binning first puts every rater on the
+same bins, so the bands at each bin come from all of them.
+
+## Several clips
+
+Because `chromodoris()` returns a ggplot, adding `facet_wrap()` splits the
+plot by clip.
+
+```{r, fig.width = 7, fig.height = 7}
+chromodoris(ratings, rater, time, value, bin = 0.5) +
+  facet_wrap(~clip, ncol = 1) +
+  labs(x = "Time (s)", y = "Rating")
+```
+
+Each panel's bands come only from that panel's rows. The same rater ids
+recur across clips, but each panel is binned and summarized on its own, so a
+rater's ratings of one clip never mix with their ratings of another.
+
+In clip C, the bands widen just after 30 s, where the true signal shifts.
+In this simulation the widening comes from the raters' different reaction
+lags: for up to 3 seconds, some raters have moved to the new level and others
+have not.
+
+## Choosing bands and center
+
+`.width` takes band widths between 0 and 1 (no two may round to the same
+whole percent, since that percent labels the band), and `center` is either
+`"mean"` or `"median"`. Here are two bands, 50% and 95%, around the median.
+
+```{r, fig.width = 7, fig.height = 4}
+chromodoris(clip_a, rater, time, value,
+            .width = c(0.5, 0.95), center = "median", bin = 0.5)
+```
+
+The `type` argument picks the quantile algorithm (1 to 9), which is passed to
+`stats::quantile()`.
+
+## Building from the stat
+
+`stat_chromodoris()` can be used in any ggplot pipeline. For each time point
+and band, it returns `level` (a factor such as `"90%"`), `.width`, `ymin`,
+`ymax`, and `center`. Map `fill = after_stat(level)` to shade the bands. A
+second layer with `geom = "line"` draws the center line, because the stat
+sets `y` to the center. The center does not depend on the band, so that
+layer needs only one value of `.width`.
+
+```{r, fig.width = 7, fig.height = 4}
+ggplot(clip_a, aes(time, value, group = rater)) +
+  stat_chromodoris(aes(fill = after_stat(level)), bin = 0.5) +
+  stat_chromodoris(geom = "line", .width = 0.9, bin = 0.5) +
+  scale_fill_brewer(palette = "Blues", name = "Band") +
+  theme_classic()
+```
+
+With `bin` set, the stat needs groups that identify the raters, because each
+rater is binned on its own; mapping `group` to the rater id does this. A
+layer with no groups signals an error.
+`chromodoris()` maps `group` for you.
+
+## What the bands do not show
+
+The bands summarize whichever values are present at each time point. This
+has a few consequences to keep in mind when reading them.
+
+If the raters' series have different lengths, the bands near the ends come
+from fewer raters and can look narrower for that reason alone. The plot does
+not mark how many raters contribute at each time.
+
+If ratings sit at a floor or ceiling of the rating scale, such as the bottom
+of a -4 to 4 scale, the outer band edges can lie flat on that bound and
+understate the spread.
+
+The bands are also not smoothed. Jagged edges reflect the data and the
+sampling rate, and binning is the package's tool for dealing with them.
