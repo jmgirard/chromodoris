@@ -5,8 +5,8 @@ This repo uses the cairn plugin. Work goes through its `/cairn` skill:
 - **Trivial** (no runtime surface: a typo, a comment, a ROADMAP row): commit
   to the default branch.
 - **Any request**: `/cairn start`, which handles a trivial one itself, and
-  plans anything else on a branch and takes it to review. `/cairn resume` picks work up, and `/cairn review`
-  ships it.
+  plans anything else on a branch and takes it to review. `/cairn resume`
+  picks work up, and `/cairn review` ships it.
 - **Status or "what's next"**: `/cairn status`.
 
 Never build on the default branch. Nothing reaches it without the user's
