@@ -159,3 +159,23 @@ test_that("bin without a group mapping errors; one grouped series bins", {
   out <- line_data(one, bin = 1)
   expect_equal(nrow(out), 3 * nrow(bin_series(one, id, time, value, width = 1)))
 })
+
+test_that("bin with a group coarser than the series warns", {
+  p <- ggplot(sim, aes(time, value, group = 1)) + stat_chromodoris(bin = 1)
+  expect_warning(ggplot_build(p), class = "chromodoris_warning_input")
+  two <- sim
+  two$cond <- ifelse(two$id <= "r12", "a", "b")
+  p <- ggplot(two, aes(time, value, group = cond)) + stat_chromodoris(bin = 1)
+  expect_warning(ggplot_build(p), class = "chromodoris_warning_input")
+})
+
+test_that("bin with group = id, or no bin, does not warn", {
+  expect_no_warning(line_data(sim, bin = 1))
+  expect_no_warning(line_data(sim[sim$id == "r01", ], bin = 1))
+  faceted <- rbind(transform(sim, panel = "a"), transform(sim, panel = "b"))
+  p <- ggplot(faceted, aes(time, value, group = id)) +
+    stat_chromodoris(bin = 1) + facet_wrap(~panel)
+  expect_no_warning(ggplot_build(p))
+  p <- ggplot(sim, aes(time, value, group = 1)) + stat_chromodoris()
+  expect_no_warning(ggplot_build(p))
+})

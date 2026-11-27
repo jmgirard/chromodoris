@@ -12,7 +12,9 @@
 #' series in a panel is pooled at each `x`. With `bin` set, `group` must
 #' identify the series, because each series is binned on its own before
 #' the pooling; a layer with no `group` mapping then signals an error when
-#' the plot is built.
+#' the plot is built, and a `group` with more than one row at the same `x`
+#' in a panel, such as a constant or a condition shared by several series,
+#' signals a warning of class `chromodoris_warning_input`.
 #'
 #' @section Computed variables:
 #' The stat returns one row per (`x`, `level`):
@@ -95,6 +97,14 @@ StatChromodoris <- ggproto(
         "{.arg bin} needs {.field group} mapped to the series id.",
         i = "Every series is binned on its own before the bands are computed."
       ), class = "chromodoris_error_input")
+    }
+    if (!is.null(params$bin) &&
+        anyDuplicated(data[c("PANEL", "group", "x")]) > 0) {
+      cli_warn(c(
+        "{.field group} has more than one row at the same {.field x}.",
+        i = "With {.arg bin} set, rows that share a group are averaged as one
+             series, so map {.field group} to the series id."
+      ), class = "chromodoris_warning_input")
     }
     params$.width <- sort(unique(params$.width), decreasing = TRUE)
     params

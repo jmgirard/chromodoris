@@ -1,5 +1,10 @@
 # chromodoris (development version)
 
+* With `bin` set, `stat_chromodoris()` warns (`chromodoris_warning_input`)
+  when a group has more than one row at the same `x` in a panel before
+  binning. This catches a `group` that pools several series, which would
+  otherwise be averaged into one with near-zero bands, and duplicate rows for
+  one series at one time.
 * New `bin_series()` averages each series within fixed-width time bins
   (bin `k` covers `[k * width, (k + 1) * width)`, rows sit at bin midpoints).
   `stat_chromodoris()` and `chromodoris()` gain a `bin` argument that applies

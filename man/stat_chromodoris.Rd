@@ -143,7 +143,9 @@ mapping \code{group} to a series id is allowed but not needed, because every
 series in a panel is pooled at each \code{x}. With \code{bin} set, \code{group} must
 identify the series, because each series is binned on its own before
 the pooling; a layer with no \code{group} mapping then signals an error when
-the plot is built.
+the plot is built, and a \code{group} with more than one row at the same \code{x}
+in a panel, such as a constant or a condition shared by several series,
+signals a warning of class \code{chromodoris_warning_input}.
 }
 
 \section{Computed variables}{
