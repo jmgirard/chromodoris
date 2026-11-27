@@ -179,3 +179,112 @@ test_that("bin with group = id, or no bin, does not warn", {
   p <- ggplot(sim, aes(time, value, group = 1)) + stat_chromodoris()
   expect_no_warning(ggplot_build(p))
 })
+
+# --- grid --------------------------------------------------------------------
+# Oracle for `grid`: summarise_bands() (test-summarise_bands.R) applied at
+# each grid point to the output of interpolate_series() (oracles O6, O7).
+
+# sim with irregular, per-rater times and an NA gap (plus an Inf) in r01.
+grid_sim <- function() {
+  set.seed(20261127)
+  d <- sim
+  d$time <- d$time + stats::runif(nrow(d), -0.2, 0.2)
+  r01 <- which(d$id == "r01")
+  d$value[r01[20:25]] <- NA
+  d$value[r01[40]] <- Inf
+  d
+}
+grid_pts <- seq(-1, 31, by = 0.25)
+
+bands_from <- function(interp, .width = c(0.5, 0.7, 0.9)) {
+  out <- do.call(rbind, lapply(split(interp, interp$time), function(d) {
+    b <- summarise_bands(d$value, .width = .width)
+    b$x <- d$time[1]
+    b
+  }))
+  out$level <- band_labels(out$.width)
+  out[order(-out$.width, out$x), ]
+}
+
+test_that("grid equals summarise_bands() over interpolate_series() output", {
+  d <- grid_sim()
+  for (m in c("linear", "constant")) {
+    d_na <- d
+    d_na$value[!is.finite(d_na$value)] <- NA
+    want <- bands_from(interpolate_series(d_na, id, time, value,
+                                          grid = grid_pts, method = m))
+    got <- list(
+      stat = layer_data(ggplot(d, aes(time, value, group = id)) +
+                          stat_chromodoris(grid = grid_pts, interpolate = m), 1),
+      wrap = layer_data(chromodoris(d, id, time, value, grid = grid_pts,
+                                    interpolate = m), 1)
+    )
+    for (ld in got) {
+      expect_equal(nrow(ld), nrow(want))
+      expect_equal(ld$x, want$x)
+      expect_equal(as.character(ld$level), want$level)
+      expect_equal(ld$ymin, want$ymin)
+      expect_equal(ld$ymax, want$ymax)
+      expect_equal(ld$center, want$center)
+    }
+  }
+})
+
+test_that("with grid, a missing y is a gap, not bridged or warned about", {
+  d <- grid_sim()
+  r01 <- d[d$id == "r01", ]
+  p <- ggplot(r01, aes(time, value, group = id)) +
+    stat_chromodoris(geom = "line", grid = grid_pts)
+  expect_no_warning(ld <- layer_data(p, 1))
+  gap <- range(r01$time[20:25])
+  expect_false(any(ld$x > gap[1] - 0.1 & ld$x < gap[2] + 0.1))
+  # The wrapper draws the line at max(.width) only.
+  line <- layer_data(chromodoris(d, id, time, value, grid = grid_pts,
+                                 interpolate = "constant"), 2)
+  expect_equal(unique(line$.width), 0.9)
+})
+
+test_that("invalid grid signals chromodoris_error_input from the stat and wrapper", {
+  for (g in list(NA_real_, c(0, NA), c(0, Inf), numeric(0), "1", list(1))) {
+    p <- ggplot(sim, aes(time, value, group = id)) + stat_chromodoris(grid = g)
+    expect_error(ggplot_build(p), class = "chromodoris_error_input")
+    expect_error(chromodoris(sim, id, time, value, grid = g),
+                 class = "chromodoris_error_input")
+  }
+  expect_error(stat_chromodoris(grid = 0, interpolate = "spline"),
+               "should be one of")
+  expect_error(chromodoris(sim, id, time, value, grid = 0,
+                           interpolate = "spline"),
+               "should be one of")
+})
+
+test_that("bin and grid together, or grid without groups, are errors", {
+  p <- ggplot(sim, aes(time, value, group = id)) +
+    stat_chromodoris(bin = 1, grid = 0:30)
+  expect_error(ggplot_build(p), class = "chromodoris_error_input")
+  expect_error(ggplot_build(p), "not both")
+  expect_error(chromodoris(sim, id, time, value, bin = 1, grid = 0:30),
+               class = "chromodoris_error_input")
+  p <- ggplot(sim, aes(time, value)) + stat_chromodoris(grid = 0:30)
+  expect_error(ggplot_build(p), class = "chromodoris_error_input")
+  expect_error(ggplot_build(p), "grid")
+})
+
+test_that("grid with a group coarser than the series warns", {
+  p <- ggplot(sim, aes(time, value, group = 1)) + stat_chromodoris(grid = 0:30)
+  expect_warning(ggplot_build(p), class = "chromodoris_warning_input")
+  expect_no_warning(line_data(sim, grid = 0:30))
+})
+
+test_that("grid interpolates within each facet panel", {
+  faceted <- rbind(transform(sim, panel = "a"),
+                   transform(sim, panel = "b", value = value + 1))
+  p <- ggplot(faceted, aes(time, value, group = id)) +
+    stat_chromodoris(geom = "line", .width = 0.9, grid = 0:30) +
+    facet_wrap(~panel)
+  ld <- layer_data(p, 1)
+  a <- ld[ld$PANEL == 1, ]
+  b <- ld[ld$PANEL == 2, ]
+  expect_equal(a$x, 0:30)
+  expect_equal(b$center, a$center + 1)
+})
