@@ -121,7 +121,10 @@ point where no series has a value gets no bands; between two grid
 points that have bands, the ribbons and the center line are drawn
 straight across it. Rows with a missing or non-finite \code{x} are dropped.
 A \code{grid} with no point inside the range of \code{x} is an error, and \code{bin}
-and \code{grid} cannot both be set.}
+and \code{grid} cannot both be set. ggplot2 transforms \code{x} by its position
+scale before the stat sees it, but \code{grid} stays in the units given, so
+\code{grid} is not supported with a transformed x scale such as
+\code{\link[ggplot2:scale_x_log10]{ggplot2::scale_x_log10()}} or \code{\link[ggplot2:scale_x_reverse]{ggplot2::scale_x_reverse()}}.}
 
 \item{interpolate}{How \code{grid} evaluates each series: \code{"linear"}
 (default) or \code{"constant"} (the last value carried forward). It is
