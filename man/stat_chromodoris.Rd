@@ -142,8 +142,13 @@ upper edge plus one center value. The default geom is a ribbon. Map
 mapping \code{group} to a series id is allowed but not needed, because every
 series in a panel is pooled at each \code{x}. With \code{bin} set, \code{group} must
 identify the series, because each series is binned on its own before
-the pooling; a layer with no \code{group} mapping then signals an error when
-the plot is built.
+the pooling; a layer with no groups (no \code{group} mapping and no discrete
+aesthetic such as \code{colour}) then signals an error when the plot is built.
+A group with more than one row at the same \code{x} in a panel signals a
+warning of class \code{chromodoris_warning_input}: this happens when \code{group}
+is a constant or a condition shared by several series sampled at the same
+times, or when a series has duplicate rows. Series in one group that share
+a bin but no \code{x} value are averaged together without a warning.
 }
 
 \section{Computed variables}{
