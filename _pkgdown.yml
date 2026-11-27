@@ -10,4 +10,5 @@ reference:
 - title: Preparing data
   contents:
   - bin_series
+  - interpolate_series
 
