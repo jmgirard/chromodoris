@@ -101,7 +101,8 @@ check_grid <- function(grid, allow_null = FALSE) {
   if (is.null(grid) && allow_null) {
     return(invisible(grid))
   }
-  if (!is.numeric(grid) || length(grid) == 0 || !all(is.finite(grid))) {
+  if (!is.numeric(grid) || !is.null(dim(grid)) || length(grid) == 0 ||
+      !all(is.finite(grid))) {
     cli_abort("{.arg grid} must be a numeric vector of finite times.",
               class = "chromodoris_error_input")
   }

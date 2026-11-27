@@ -140,8 +140,9 @@ StatChromodoris <- ggproto(
         i = "Every series is aligned on its own before the bands are computed."
       ), class = "chromodoris_error_input")
     }
+    finite <- is.finite(data$x)
     if (!is.null(arg) &&
-        anyDuplicated(data[c("PANEL", "group", "x")]) > 0) {
+        anyDuplicated(data[finite, c("PANEL", "group", "x")]) > 0) {
       cli_warn(c(
         "{.field group} has more than one row at the same {.field x}.",
         i = "With {.arg {arg}} set, rows that share a group are averaged as one

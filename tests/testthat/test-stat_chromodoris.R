@@ -245,7 +245,8 @@ test_that("with grid, a missing y is a gap, not bridged or warned about", {
 })
 
 test_that("invalid grid signals chromodoris_error_input from the stat and wrapper", {
-  for (g in list(NA_real_, c(0, NA), c(0, Inf), numeric(0), "1", list(1))) {
+  for (g in list(NA_real_, c(0, NA), c(0, Inf), numeric(0), "1", list(1),
+                 matrix(c(0, 1)))) {
     p <- ggplot(sim, aes(time, value, group = id)) + stat_chromodoris(grid = g)
     expect_error(ggplot_build(p), class = "chromodoris_error_input")
     expect_error(chromodoris(sim, id, time, value, grid = g),
@@ -285,6 +286,20 @@ test_that("grid with a group coarser than the series warns", {
   p <- ggplot(sim, aes(time, value, group = 1)) + stat_chromodoris(grid = 0:30)
   expect_warning(ggplot_build(p), class = "chromodoris_warning_input")
   expect_no_warning(line_data(sim, grid = 0:30))
+})
+
+test_that("missing times do not set off the duplicate-x warning", {
+  d <- data.frame(id = "a", time = c(0, 1, NA, NA), value = 1:4)
+  expect_no_warning(ggplot_build(chromodoris(d, id, time, value, grid = 0:1)))
+  p <- ggplot(d, aes(time, value, group = id)) +
+    stat_chromodoris(bin = 1, na.rm = TRUE)
+  expect_no_warning(ggplot_build(p))
+})
+
+test_that("grid accepts groups from a discrete aesthetic", {
+  p <- ggplot(sim, aes(time, value, colour = id)) +
+    stat_chromodoris(geom = "line", .width = 0.9, grid = 0:30)
+  expect_equal(layer_data(p)$x, 0:30)
 })
 
 test_that("grid interpolates within each facet panel", {
