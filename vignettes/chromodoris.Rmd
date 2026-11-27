@@ -1,0 +1,19 @@
+---
+title: "Many raters, one clip timeline"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Many raters, one clip timeline}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(chromodoris)
+```
