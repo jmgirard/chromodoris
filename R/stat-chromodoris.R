@@ -11,10 +11,13 @@
 #' mapping `group` to a series id is allowed but not needed, because every
 #' series in a panel is pooled at each `x`. With `bin` set, `group` must
 #' identify the series, because each series is binned on its own before
-#' the pooling; a layer with no `group` mapping then signals an error when
-#' the plot is built, and a `group` with more than one row at the same `x`
-#' in a panel, such as a constant or a condition shared by several series,
-#' signals a warning of class `chromodoris_warning_input`.
+#' the pooling; a layer with no groups (no `group` mapping and no discrete
+#' aesthetic such as `colour`) then signals an error when the plot is built.
+#' A group with more than one row at the same `x` in a panel signals a
+#' warning of class `chromodoris_warning_input`: this happens when `group`
+#' is a constant or a condition shared by several series sampled at the same
+#' times, or when a series has duplicate rows. Series in one group that share
+#' a bin but no `x` value are averaged together without a warning.
 #'
 #' @section Computed variables:
 #' The stat returns one row per (`x`, `level`):
