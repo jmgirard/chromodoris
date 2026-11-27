@@ -4,8 +4,8 @@ This repo uses the cairn plugin. Work goes through its `/cairn` skill:
 
 - **Trivial** (no runtime surface: a typo, a comment, a ROADMAP row): commit
   to the default branch.
-- **Anything else**: `/cairn start`, which plans the work on a branch and
-  takes it to review. `/cairn resume` picks work up, and `/cairn review`
+- **Any request**: `/cairn start`, which handles a trivial one itself, and
+  plans anything else on a branch and takes it to review. `/cairn resume` picks work up, and `/cairn review`
   ships it.
 - **Status or "what's next"**: `/cairn status`.
 
